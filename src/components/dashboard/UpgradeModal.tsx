@@ -21,18 +21,15 @@ const features = [
 export function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-card border-border">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-center mb-4">
-            <div className="relative">
-              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center glow-gold">
-                <Crown className="h-8 w-8 text-primary-foreground" />
-              </div>
-              <div className="absolute -inset-2 bg-primary/20 blur-xl rounded-full -z-10" />
+            <div className="h-16 w-16 rounded-full bg-secondary border border-border flex items-center justify-center">
+              <Crown className="h-8 w-8 text-foreground" />
             </div>
           </div>
           <DialogTitle className="text-center text-2xl font-bold">
-            Unlock <span className="text-gradient-gold">YieldCanary Pro</span>
+            Unlock YieldCanary Pro
           </DialogTitle>
           <DialogDescription className="text-center text-muted-foreground">
             See the full picture. Make smarter income decisions.
@@ -43,8 +40,8 @@ export function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) 
           <ul className="space-y-3">
             {features.map((feature) => (
               <li key={feature} className="flex items-center gap-3">
-                <div className="h-5 w-5 rounded-full bg-canary-green/20 flex items-center justify-center">
-                  <Check className="h-3 w-3 text-canary-green" />
+                <div className="h-5 w-5 rounded-full bg-secondary border border-border flex items-center justify-center">
+                  <Check className="h-3 w-3 text-foreground" />
                 </div>
                 <span className="text-sm text-foreground">{feature}</span>
               </li>
@@ -65,9 +62,9 @@ export function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) 
 
           <Button 
             onClick={onUpgrade}
-            className="w-full gap-2 bg-gradient-to-r from-primary to-amber-500 hover:from-primary/90 hover:to-amber-500/90 text-primary-foreground font-semibold h-12 text-lg"
+            className="w-full h-12 text-lg"
           >
-            <Zap className="h-5 w-5" />
+            <Zap className="h-5 w-5 mr-2" />
             Upgrade Now
           </Button>
 
