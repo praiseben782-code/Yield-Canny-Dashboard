@@ -52,7 +52,7 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
+    <div className="min-h-screen bg-background">
       <DashboardHeader
         isPaid={isPaid}
         searchQuery={searchQuery}
@@ -63,9 +63,8 @@ export function Dashboard() {
       <main className="container px-4 md:px-6 py-6 space-y-6">
         {/* Hero Section */}
         <div className="text-center space-y-2 py-4">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Which ETFs are <span className="text-canary-green">healthy</span> vs{' '}
-            <span className="text-canary-red">quietly dying</span>?
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+            Which ETFs are healthy vs quietly dying?
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             See through the marketing. Know exactly what lands in your pocket after taxes.
@@ -74,9 +73,9 @@ export function Dashboard() {
           <div className="pt-2">
             <button
               onClick={() => setIsPaid(!isPaid)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-secondary/50 border border-border/50 hover:bg-secondary transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-secondary border border-border hover:bg-muted transition-colors"
             >
-              <div className={`h-2 w-2 rounded-full ${isPaid ? 'bg-canary-green' : 'bg-muted-foreground'}`} />
+              <div className={`h-2 w-2 rounded-full ${isPaid ? 'bg-foreground' : 'bg-muted-foreground'}`} />
               Demo: {isPaid ? 'Pro View' : 'Free View'}
             </button>
           </div>
@@ -103,7 +102,7 @@ export function Dashboard() {
         />
 
         {/* Footer */}
-        <footer className="text-center py-8 border-t border-border/50">
+        <footer className="text-center py-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
             Data updated daily. ROC data from 19a-1 filings.
           </p>

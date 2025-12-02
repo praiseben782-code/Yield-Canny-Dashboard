@@ -104,12 +104,12 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
     isKiller?: boolean;
   }) => (
     <TableHead 
-      className={`cursor-pointer hover:bg-secondary/50 transition-colors ${className} ${isKiller ? 'bg-primary/5' : ''}`}
+      className={`cursor-pointer hover:bg-muted transition-colors ${className}`}
       onClick={() => handleSort(sortKeyProp)}
     >
       <div className="flex items-center gap-1.5">
-        {Icon && <Icon className={`h-3.5 w-3.5 ${isKiller ? 'text-primary' : 'text-muted-foreground'}`} />}
-        <span className={isKiller ? 'text-primary font-semibold' : ''}>{label}</span>
+        {Icon && <Icon className="h-3.5 w-3.5 text-muted-foreground" />}
+        <span>{label}</span>
         {sortKey === sortKeyProp && (
           sortDirection === 'asc' 
             ? <ChevronUp className="h-3 w-3" /> 
@@ -137,11 +137,11 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-border/50 overflow-hidden bg-card/50">
+      <div className="rounded-xl border border-border overflow-hidden bg-background">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-secondary/30 hover:bg-secondary/30">
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
                 {isPaid && <TableHead className="w-10" />}
                 <SortableHeader label="Ticker" sortKeyProp="ticker" />
                 <SortableHeader label="Name" sortKeyProp="name" className="min-w-[200px]" />
@@ -186,17 +186,11 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
             <TableBody>
               {sortedETFs.map((etf, index) => {
                 const unlocked = isUnlocked(etf.ticker);
-                const isFreeExample = FREE_UNLOCKED_TICKERS.includes(etf.ticker);
                 
                 return (
                   <TableRow 
                     key={etf.id}
-                    className={`
-                      hover:bg-secondary/30 transition-colors
-                      ${isFreeExample && !isPaid ? 'bg-primary/5' : ''}
-                      animate-fade-in
-                    `}
-                    style={{ animationDelay: `${index * 0.02}s` }}
+                    className="hover:bg-muted/50 transition-colors"
                   >
                     {isPaid && (
                       <TableCell>
@@ -207,7 +201,7 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                           <Star 
                             className={`h-4 w-4 ${
                               watchlist.has(etf.ticker) 
-                                ? 'fill-primary text-primary' 
+                                ? 'fill-foreground text-foreground' 
                                 : 'text-muted-foreground'
                             }`} 
                           />
@@ -226,43 +220,34 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                     <TableCell>
                       <CanaryStatusBadge status={etf.canaryStatus} />
                     </TableCell>
-                    <TableCell className="bg-primary/5">
+                    <TableCell>
                       <BlurredCell 
                         value={etf.deathClock}
                         isUnlocked={unlocked}
                         onUpgradeClick={onUpgrade}
-                        isHighlighted
                       />
                     </TableCell>
-                    <TableCell className="bg-primary/5">
+                    <TableCell>
                       <BlurredCell 
                         value={formatPercent(etf.trueIncomeYield)}
                         isUnlocked={unlocked}
                         onUpgradeClick={onUpgrade}
-                        isHighlighted
                       />
                     </TableCell>
-                    <TableCell className="bg-primary/5">
+                    <TableCell>
                       <BlurredCell 
                         value={formatPercent(etf.totalReturn1Y)}
                         isUnlocked={unlocked}
                         onUpgradeClick={onUpgrade}
-                        isHighlighted
-                        colorCode
                       />
                     </TableCell>
-                    <TableCell className="bg-primary/5">
+                    <TableCell>
                       <div className="flex items-center gap-1.5">
                         <BlurredCell 
                           value={formatPercent(etf.takeHomeCashReturn1Y)}
                           isUnlocked={unlocked}
                           onUpgradeClick={onUpgrade}
-                          isHighlighted
-                          colorCode
                         />
-                        {unlocked && (
-                          <span className="text-lg">💰</span>
-                        )}
                       </div>
                     </TableCell>
                     <TableCell className="font-mono text-muted-foreground">
