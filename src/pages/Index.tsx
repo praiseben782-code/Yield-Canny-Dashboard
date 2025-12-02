@@ -1,13 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Dashboard } from '@/components/dashboard/Dashboard';
+import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      <Helmet>
+        <title>YieldCanary - Income ETF Health Monitor | See Which ETFs Are Quietly Dying</title>
+        <meta 
+          name="description" 
+          content="Instantly see which income ETFs are healthy vs quietly dying from return-of-capital. Get the true income yield, death clock, and take-home cash returns after taxes." 
+        />
+        <meta name="keywords" content="ETF, income ETF, dividend ETF, ROC, return of capital, JEPI, QYLD, covered call ETF, yield" />
+      </Helmet>
+      <Dashboard />
+    </>
   );
 };
 
