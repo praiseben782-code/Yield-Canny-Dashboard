@@ -14,7 +14,223 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      etfs: {
+        Row: {
+          aum: number | null
+          canary_health: string | null
+          created_at: string | null
+          death_clock_years: number | null
+          dividends_last_12mo: number | null
+          dividends_since_inception: number | null
+          dividends_ytd: number | null
+          expense_ratio: number | null
+          headline_yield_ttm: number | null
+          id: string
+          inception_date: string | null
+          latest_adj_close: number | null
+          latest_date: string | null
+          name: string | null
+          price_1y_ago: number | null
+          price_at_inception: number | null
+          price_ytd_start: number | null
+          roc_date: string | null
+          roc_latest: number | null
+          spent_dividends_return_1y: number | null
+          spent_dividends_return_inception: number | null
+          spent_dividends_return_ytd: number | null
+          take_home_cash_return_1y: number | null
+          take_home_cash_return_inception: number | null
+          take_home_cash_return_ytd: number | null
+          take_home_return_1y: number | null
+          take_home_return_inception: number | null
+          take_home_return_ytd: number | null
+          ticker: string
+          total_return_1y: number | null
+          total_return_inception: number | null
+          total_return_ytd: number | null
+          true_income_yield: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          aum?: number | null
+          canary_health?: string | null
+          created_at?: string | null
+          death_clock_years?: number | null
+          dividends_last_12mo?: number | null
+          dividends_since_inception?: number | null
+          dividends_ytd?: number | null
+          expense_ratio?: number | null
+          headline_yield_ttm?: number | null
+          id?: string
+          inception_date?: string | null
+          latest_adj_close?: number | null
+          latest_date?: string | null
+          name?: string | null
+          price_1y_ago?: number | null
+          price_at_inception?: number | null
+          price_ytd_start?: number | null
+          roc_date?: string | null
+          roc_latest?: number | null
+          spent_dividends_return_1y?: number | null
+          spent_dividends_return_inception?: number | null
+          spent_dividends_return_ytd?: number | null
+          take_home_cash_return_1y?: number | null
+          take_home_cash_return_inception?: number | null
+          take_home_cash_return_ytd?: number | null
+          take_home_return_1y?: number | null
+          take_home_return_inception?: number | null
+          take_home_return_ytd?: number | null
+          ticker: string
+          total_return_1y?: number | null
+          total_return_inception?: number | null
+          total_return_ytd?: number | null
+          true_income_yield?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          aum?: number | null
+          canary_health?: string | null
+          created_at?: string | null
+          death_clock_years?: number | null
+          dividends_last_12mo?: number | null
+          dividends_since_inception?: number | null
+          dividends_ytd?: number | null
+          expense_ratio?: number | null
+          headline_yield_ttm?: number | null
+          id?: string
+          inception_date?: string | null
+          latest_adj_close?: number | null
+          latest_date?: string | null
+          name?: string | null
+          price_1y_ago?: number | null
+          price_at_inception?: number | null
+          price_ytd_start?: number | null
+          roc_date?: string | null
+          roc_latest?: number | null
+          spent_dividends_return_1y?: number | null
+          spent_dividends_return_inception?: number | null
+          spent_dividends_return_ytd?: number | null
+          take_home_cash_return_1y?: number | null
+          take_home_cash_return_inception?: number | null
+          take_home_cash_return_ytd?: number | null
+          take_home_return_1y?: number | null
+          take_home_return_inception?: number | null
+          take_home_return_ytd?: number | null
+          ticker?: string
+          total_return_1y?: number | null
+          total_return_inception?: number | null
+          total_return_ytd?: number | null
+          true_income_yield?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      notices_19a1: {
+        Row: {
+          created_at: string | null
+          effective_date: string | null
+          id: string
+          last_updated: string | null
+          notice_date: string | null
+          roc_percent: number | null
+          ticker_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          effective_date?: string | null
+          id?: string
+          last_updated?: string | null
+          notice_date?: string | null
+          roc_percent?: number | null
+          ticker_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          effective_date?: string | null
+          id?: string
+          last_updated?: string | null
+          notice_date?: string | null
+          roc_percent?: number | null
+          ticker_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notices_19a1_ticker_id_fkey"
+            columns: ["ticker_id"]
+            isOneToOne: false
+            referencedRelation: "etfs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          id: string
+          is_paid: boolean | null
+          plan: string | null
+          tax_rate: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          id: string
+          is_paid?: boolean | null
+          plan?: string | null
+          tax_rate?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          is_paid?: boolean | null
+          plan?: string | null
+          tax_rate?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      weekly_data: {
+        Row: {
+          adj_close: number
+          created_at: string | null
+          date: string
+          dividend: number | null
+          id: string
+          ticker_id: string
+        }
+        Insert: {
+          adj_close: number
+          created_at?: string | null
+          date: string
+          dividend?: number | null
+          id?: string
+          ticker_id: string
+        }
+        Update: {
+          adj_close?: number
+          created_at?: string | null
+          date?: string
+          dividend?: number | null
+          id?: string
+          ticker_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_data_ticker_id_fkey"
+            columns: ["ticker_id"]
+            isOneToOne: false
+            referencedRelation: "etfs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
