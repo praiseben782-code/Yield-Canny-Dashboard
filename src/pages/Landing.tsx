@@ -23,10 +23,12 @@ const Landing = () => {
               <span className="text-xl font-bold text-foreground">YieldCanary</span>
             </div>
             <div className="flex items-center gap-4">
-              <Link to="/dashboard">
-                <Button variant="ghost">Dashboard</Button>
+              <Link to="/auth">
+                <Button variant="ghost">Login</Button>
               </Link>
-              <Button>Get Started</Button>
+              <Link to="/auth">
+                <Button>Get Started</Button>
+              </Link>
             </div>
           </div>
         </nav>
@@ -44,9 +46,9 @@ const Landing = () => {
               We name the dying ones — and show exactly how many years they have left.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/dashboard">
+              <Link to="/auth">
                 <Button size="lg" className="text-lg px-8">
-                  See the Dashboard
+                  Get Started Free
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="text-lg px-8">
@@ -264,7 +266,7 @@ const PricingCard = ({
       <span className="text-4xl font-bold text-foreground">{price}</span>
       <span className="text-muted-foreground">{period}</span>
     </div>
-    <Button className="w-full mb-6" variant={buttonVariant}>{buttonText}</Button>
+    <Link to="/auth"><Button className="w-full mb-6" variant={buttonVariant}>{buttonText}</Button></Link>
     <ul className="space-y-3">
       {features.map((feature, i) => (
         <li key={i} className="flex items-start gap-2">
