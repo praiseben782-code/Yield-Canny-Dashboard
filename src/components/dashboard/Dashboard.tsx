@@ -4,25 +4,19 @@ import { KillerStats } from './KillerStats';
 import { ETFTable } from './ETFTable';
 import { FilterBar } from './FilterBar';
 import { UpgradeModal } from './UpgradeModal';
-import { mockETFs } from '@/data/mockETFs';
+import { useETFs } from '@/hooks/useETFs';
 import { CanaryStatus } from '@/types/etf';
 
 export function Dashboard() {
+  const { etfs, loading, error } = useETFs();
   const [isPaid, setIsPaid] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<CanaryStatus | 'all'>('all');
-  const [issuerFilter, setIssuerFilter] = useState('all');
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-
-  // Get unique issuers
-  const issuers = useMemo(() => {
-    const uniqueIssuers = [...new Set(mockETFs.map((etf) => etf.issuer))];
-    return uniqueIssuers.sort();
-  }, []);
 
   // Filter ETFs
   const filteredETFs = useMemo(() => {
-    return mockETFs.filter((etf) => {
+    return etfs.filter((etf) => {
       // Search filter
       const searchMatch = 
         searchQuery === '' ||
@@ -32,12 +26,9 @@ export function Dashboard() {
       // Status filter
       const statusMatch = statusFilter === 'all' || etf.canaryStatus === statusFilter;
 
-      // Issuer filter
-      const issuerMatch = issuerFilter === 'all' || etf.issuer === issuerFilter;
-
-      return searchMatch && statusMatch && issuerMatch;
+      return searchMatch && statusMatch;
     });
-  }, [searchQuery, statusFilter, issuerFilter]);
+  }, [etfs, searchQuery, statusFilter]);
 
   const handleUpgrade = () => {
     // In production, this would redirect to Stripe
@@ -47,9 +38,28 @@ export function Dashboard() {
 
   const handleClearFilters = () => {
     setStatusFilter('all');
-    setIssuerFilter('all');
     setSearchQuery('');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading ETF data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive">Error loading ETFs: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,9 +98,6 @@ export function Dashboard() {
         <FilterBar
           statusFilter={statusFilter}
           onStatusFilterChange={setStatusFilter}
-          issuerFilter={issuerFilter}
-          onIssuerFilterChange={setIssuerFilter}
-          issuers={issuers}
           onClearFilters={handleClearFilters}
         />
 

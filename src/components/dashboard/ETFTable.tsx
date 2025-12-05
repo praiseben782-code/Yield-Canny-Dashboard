@@ -83,8 +83,13 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
 
   const isUnlocked = (ticker: string) => isPaid || FREE_UNLOCKED_TICKERS.includes(ticker);
 
-  const formatPercent = (value: number) => `${(value * 100).toFixed(2)}%`;
-  const formatCurrency = (value: number) => {
+  const formatPercent = (value: number | null) => {
+    if (!value) return '0.00%';
+    return `${(value * 100).toFixed(2)}%`;
+  };
+  
+  const formatCurrency = (value: number | null) => {
+    if (!value) return '$0.00';
     if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
     if (value >= 1e6) return `$${(value / 1e6).toFixed(0)}M`;
     return `$${value.toFixed(2)}`;
@@ -145,7 +150,6 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                 {isPaid && <TableHead className="w-10" />}
                 <SortableHeader label="Ticker" sortKeyProp="ticker" />
                 <SortableHeader label="Name" sortKeyProp="name" className="min-w-[200px]" />
-                <SortableHeader label="Issuer" sortKeyProp="issuer" />
                 <SortableHeader 
                   label="Canary Status" 
                   sortKeyProp="canaryStatus"
@@ -214,9 +218,6 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                     <TableCell className="text-muted-foreground max-w-[200px] truncate">
                       {etf.name}
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {etf.issuer}
-                    </TableCell>
                     <TableCell>
                       <CanaryStatusBadge status={etf.canaryStatus} />
                     </TableCell>
@@ -251,7 +252,7 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                       </div>
                     </TableCell>
                     <TableCell className="font-mono text-muted-foreground">
-                      ${etf.latestAdjClose.toFixed(2)}
+                      ${etf.latestAdjClose ? etf.latestAdjClose.toFixed(2) : '0.00'}
                     </TableCell>
                     <TableCell className="font-mono text-muted-foreground">
                       {formatPercent(etf.headlineYieldTTM)}
@@ -267,7 +268,7 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
                       {formatCurrency(etf.aum)}
                     </TableCell>
                     <TableCell className="font-mono text-muted-foreground">
-                      {(etf.expenseRatio * 100).toFixed(2)}%
+                      {etf.expenseRatio ? (etf.expenseRatio * 100).toFixed(2) : '0.00'}%
                     </TableCell>
                   </TableRow>
                 );

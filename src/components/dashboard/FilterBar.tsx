@@ -1,26 +1,19 @@
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CanaryStatus } from '@/types/etf';
 import { Filter, X } from 'lucide-react';
 
 interface FilterBarProps {
   statusFilter: CanaryStatus | 'all';
   onStatusFilterChange: (status: CanaryStatus | 'all') => void;
-  issuerFilter: string;
-  onIssuerFilterChange: (issuer: string) => void;
-  issuers: string[];
   onClearFilters: () => void;
 }
 
 export function FilterBar({
   statusFilter,
   onStatusFilterChange,
-  issuerFilter,
-  onIssuerFilterChange,
-  issuers,
   onClearFilters,
 }: FilterBarProps) {
-  const hasActiveFilters = statusFilter !== 'all' || issuerFilter !== 'all';
+  const hasActiveFilters = statusFilter !== 'all';
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -64,22 +57,6 @@ export function FilterBar({
           Dead
         </Button>
       </div>
-
-      {/* Issuer Filter */}
-      <Select value={issuerFilter} onValueChange={onIssuerFilterChange}>
-        <SelectTrigger className="w-[160px] h-8">
-          <SelectValue placeholder="All Issuers" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Issuers</SelectItem>
-          {issuers.map((issuer) => (
-            <SelectItem key={issuer} value={issuer}>
-              {issuer}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
       {/* Clear Filters */}
       {hasActiveFilters && (
         <Button

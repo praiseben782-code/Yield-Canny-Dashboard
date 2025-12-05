@@ -12,54 +12,107 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if user is already logged in
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error("Session check error:", sessionError);
+          return;
+        }
+        if (session?.user) {
+          navigate("/dashboard");
+        }
+      } catch (err) {
+        console.error("Error checking session:", err);
+      }
+    };
+
+    checkSession();
+
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state changed:", event, session?.user?.email);
         if (session?.user) {
           navigate("/dashboard");
         }
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        navigate("/dashboard");
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    return () => subscription?.unsubscribe();
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccessMessage("");
     setLoading(true);
+
+    // Validation
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        console.log("Attempting sign in with:", email);
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (error) throw error;
-        toast({ title: "Welcome back!" });
+        if (error) {
+          console.error("Sign in error:", error);
+          // Handle email not confirmed
+          if (error.message.includes("Email not confirmed")) {
+            setError("Please confirm your email first. Check your inbox for a confirmation link.");
+            return;
+          }
+          throw new Error(error.message);
+        }
+        console.log("Sign in successful:", data.user?.email);
+        toast({ title: "Welcome back!", description: "Redirecting to dashboard..." });
       } else {
-        const { error } = await supabase.auth.signUp({
+        console.log("Attempting sign up with:", email);
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
           },
         });
-        if (error) throw error;
-        toast({ title: "Account created successfully!" });
+        if (error) {
+          console.error("Sign up error:", error);
+          throw new Error(error.message);
+        }
+        console.log("Sign up successful:", data.user?.email);
+        setSuccessMessage("Account created! Check your email to confirm your account, then sign in.");
+        setEmail("");
+        setPassword("");
+        // Switch to login view after signup
+        setTimeout(() => setIsLogin(true), 2000);
       }
     } catch (error: any) {
+      console.error("Auth error:", error);
+      const errorMessage = error?.message || "An unexpected error occurred";
+      setError(errorMessage);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Authentication Error",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -86,6 +139,16 @@ export default function Auth() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-2 rounded text-sm">
+              {error}
+            </div>
+          )}
+          {successMessage && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded text-sm">
+              {successMessage}
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
