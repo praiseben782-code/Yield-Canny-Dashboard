@@ -1,4 +1,5 @@
-import { Bird, Crown, Search, Bell, Settings, LogOut } from 'lucide-react';
+import { Bird, Crown, Search, Bell, Settings, LogOut, ChevronLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -9,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardHeaderProps {
   isPaid: boolean;
@@ -25,20 +27,40 @@ export function DashboardHeader({
   searchQuery,
   onSearchChange,
 }: DashboardHeaderProps) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container flex h-16 items-center justify-between gap-4 px-4 md:px-6">
-        {/* Logo */}
+        {/* Logo + Back Button */}
         <div className="flex items-center gap-3">
-          <Bird className="h-8 w-8 text-foreground" />
-          <div className="flex flex-col">
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              YieldCanary
-            </span>
-            <span className="text-[10px] text-muted-foreground -mt-1">
-              Income ETF Health Monitor
-            </span>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <Bird className="h-8 w-8 text-foreground" />
+            <div className="flex flex-col text-left">
+              <span className="text-xl font-bold tracking-tight text-foreground">
+                YieldCanary
+              </span>
+              <span className="text-[10px] text-muted-foreground -mt-1">
+                Income ETF Health Monitor
+              </span>
+            </div>
+          </button>
         </div>
 
         {/* Search */}
@@ -96,7 +118,7 @@ export function DashboardHeader({
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign out
               </DropdownMenuItem>

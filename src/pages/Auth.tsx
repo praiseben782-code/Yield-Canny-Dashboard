@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Bird } from "lucide-react";
+import { Bird, ChevronLeft } from "lucide-react";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -122,12 +122,25 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="absolute top-4 left-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/')}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+      </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center justify-center gap-2 mb-4 mx-auto hover:opacity-80 transition-opacity"
+          >
             <Bird className="h-8 w-8 text-foreground" />
             <span className="text-2xl font-bold text-foreground">YieldCanary</span>
-          </div>
+          </button>
           <h1 className="text-2xl font-semibold text-foreground">
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>

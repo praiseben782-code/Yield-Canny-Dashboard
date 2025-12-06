@@ -5,14 +5,17 @@ import { ETFTable } from './ETFTable';
 import { FilterBar } from './FilterBar';
 import { UpgradeModal } from './UpgradeModal';
 import { useETFs } from '@/hooks/useETFs';
+import { useUserSubscription } from '@/hooks/useUserSubscription';
 import { CanaryStatus } from '@/types/etf';
 
 export function Dashboard() {
   const { etfs, loading, error } = useETFs();
-  const [isPaid, setIsPaid] = useState(false);
+  const { user: subscriptionUser, loading: userLoading } = useUserSubscription();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<CanaryStatus | 'all'>('all');
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  const isPaid = subscriptionUser?.is_paid || false;
 
   // Filter ETFs
   const filteredETFs = useMemo(() => {
@@ -30,18 +33,12 @@ export function Dashboard() {
     });
   }, [etfs, searchQuery, statusFilter]);
 
-  const handleUpgrade = () => {
-    // In production, this would redirect to Stripe
-    setIsPaid(true);
-    setIsUpgradeModalOpen(false);
-  };
-
   const handleClearFilters = () => {
     setStatusFilter('all');
     setSearchQuery('');
   };
 
-  if (loading) {
+  if (loading || userLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -79,16 +76,6 @@ export function Dashboard() {
           <p className="text-muted-foreground max-w-2xl mx-auto">
             See through the marketing. Know exactly what lands in your pocket after taxes.
           </p>
-          {/* Demo Toggle */}
-          <div className="pt-2">
-            <button
-              onClick={() => setIsPaid(!isPaid)}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-secondary border border-border hover:bg-muted transition-colors"
-            >
-              <div className={`h-2 w-2 rounded-full ${isPaid ? 'bg-foreground' : 'bg-muted-foreground'}`} />
-              Demo: {isPaid ? 'Pro View' : 'Free View'}
-            </button>
-          </div>
         </div>
 
         {/* Killer Stats */}
@@ -122,7 +109,7 @@ export function Dashboard() {
       <UpgradeModal
         isOpen={isUpgradeModalOpen}
         onClose={() => setIsUpgradeModalOpen(false)}
-        onUpgrade={handleUpgrade}
+        onUpgrade={() => setIsUpgradeModalOpen(false)}
       />
     </div>
   );

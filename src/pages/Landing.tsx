@@ -2,8 +2,24 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
 
 const Landing = () => {
+  const [isYearly, setIsYearly] = useState(true);
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: PricingPlan) => {
+    try {
+      setLoading(plan);
+      await redirectToCheckout(plan);
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      alert('Failed to start checkout. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
   return (
     <>
       <Helmet>
@@ -143,8 +159,20 @@ const Landing = () => {
             </div>
             
             <div className="flex justify-center gap-4 mb-12">
-              <Button variant="outline" className="rounded-full">Monthly</Button>
-              <Button className="rounded-full">Yearly (Get 1 month free)</Button>
+              <Button 
+                variant={!isYearly ? "default" : "outline"} 
+                className="rounded-full"
+                onClick={() => setIsYearly(false)}
+              >
+                Monthly
+              </Button>
+              <Button 
+                variant={isYearly ? "default" : "outline"} 
+                className="rounded-full"
+                onClick={() => setIsYearly(true)}
+              >
+                Yearly (Save 17%)
+              </Button>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -161,12 +189,14 @@ const Landing = () => {
                 ]}
                 buttonText="Get Started"
                 buttonVariant="outline"
+                onCheckout={() => window.location.href = '/auth'}
+                isLoading={false}
               />
               <PricingCard 
                 name="Basic"
                 description="Full access to the core Decay Radar"
-                price="$89"
-                period="/ year"
+                price={isYearly ? "$89" : "$9"}
+                period={isYearly ? "/ year" : "/ month"}
                 features={[
                   "True Income Yield revealed",
                   "ROC % + ROC Health",
@@ -177,12 +207,14 @@ const Landing = () => {
                 ]}
                 buttonText="Start Basic"
                 featured
+                onCheckout={() => handleCheckout(isYearly ? 'basic_yearly' : 'basic_monthly')}
+                isLoading={loading === (isYearly ? 'basic_yearly' : 'basic_monthly')}
               />
               <PricingCard 
                 name="Advanced"
                 description="Never miss another dying fund"
-                price="$189"
-                period="/ year"
+                price={isYearly ? "$189" : "$19"}
+                period={isYearly ? "/ year" : "/ month"}
                 features={[
                   "Everything in Basic +",
                   'Weekly "Dead Canary Alert" emails',
@@ -193,6 +225,8 @@ const Landing = () => {
                 ]}
                 buttonText="Start Advanced"
                 buttonVariant="outline"
+                onCheckout={() => handleCheckout(isYearly ? 'advanced_yearly' : 'advanced_monthly')}
+                isLoading={loading === (isYearly ? 'advanced_yearly' : 'advanced_monthly')}
               />
             </div>
           </div>
@@ -248,7 +282,9 @@ const PricingCard = ({
   features, 
   buttonText, 
   buttonVariant = "default",
-  featured = false 
+  featured = false,
+  onCheckout,
+  isLoading = false,
 }: { 
   name: string; 
   description: string; 
@@ -258,6 +294,8 @@ const PricingCard = ({
   buttonText: string; 
   buttonVariant?: "default" | "outline";
   featured?: boolean;
+  onCheckout: () => void;
+  isLoading?: boolean;
 }) => (
   <div className={`rounded-lg p-8 ${featured ? 'border-2 border-foreground bg-muted/30' : 'border border-border bg-background'}`}>
     <h3 className="text-xl font-bold text-foreground mb-1">{name}</h3>
@@ -266,7 +304,14 @@ const PricingCard = ({
       <span className="text-4xl font-bold text-foreground">{price}</span>
       <span className="text-muted-foreground">{period}</span>
     </div>
-    <Link to="/auth"><Button className="w-full mb-6" variant={buttonVariant}>{buttonText}</Button></Link>
+    <Button 
+      className="w-full mb-6" 
+      variant={buttonVariant}
+      onClick={onCheckout}
+      disabled={isLoading}
+    >
+      {isLoading ? 'Loading...' : buttonText}
+    </Button>
     <ul className="space-y-3">
       {features.map((feature, i) => (
         <li key={i} className="flex items-start gap-2">
