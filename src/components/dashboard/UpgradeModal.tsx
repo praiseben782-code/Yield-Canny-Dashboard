@@ -1,6 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, Crown, Zap } from 'lucide-react';
+import { useState } from 'react';
+import { redirectToCheckout } from '@/integrations/stripe/checkout';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -19,6 +22,32 @@ const features = [
 ];
 
 export function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) {
+  const [loading, setLoading] = useState(false);
+
+  const handleUpgradeClick = async () => {
+    try {
+      setLoading(true);
+      
+      // Get current user email
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+
+      if (!email) {
+        alert('Unable to find user email. Please sign in again.');
+        onClose();
+        return;
+      }
+
+      // Redirect to Stripe checkout for Advanced Monthly plan
+      await redirectToCheckout('advanced_monthly', email);
+    } catch (error) {
+      console.error('Upgrade failed:', error);
+      alert('Failed to start upgrade. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -61,11 +90,12 @@ export function UpgradeModal({ isOpen, onClose, onUpgrade }: UpgradeModalProps) 
           </div>
 
           <Button 
-            onClick={onUpgrade}
+            onClick={handleUpgradeClick}
+            disabled={loading}
             className="w-full h-12 text-lg"
           >
             <Zap className="h-5 w-5 mr-2" />
-            Upgrade Now
+            {loading ? 'Processing...' : 'Upgrade Now'}
           </Button>
 
           <p className="text-center text-xs text-muted-foreground">

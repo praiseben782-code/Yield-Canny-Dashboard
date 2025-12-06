@@ -77,11 +77,6 @@ export default function Auth() {
         });
         if (error) {
           console.error("Sign in error:", error);
-          // Handle email not confirmed
-          if (error.message.includes("Email not confirmed")) {
-            setError("Please confirm your email first. Check your inbox for a confirmation link.");
-            return;
-          }
           throw new Error(error.message);
         }
         console.log("Sign in successful:", data.user?.email);
@@ -91,20 +86,17 @@ export default function Auth() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-          },
         });
         if (error) {
           console.error("Sign up error:", error);
           throw new Error(error.message);
         }
         console.log("Sign up successful:", data.user?.email);
-        setSuccessMessage("Account created! Check your email to confirm your account, then sign in.");
+        setSuccessMessage("Account created! Signing you in...");
         setEmail("");
         setPassword("");
-        // Switch to login view after signup
-        setTimeout(() => setIsLogin(true), 2000);
+        // Auto-sign in after signup
+        setTimeout(() => setIsLogin(true), 1000);
       }
     } catch (error: any) {
       console.error("Auth error:", error);

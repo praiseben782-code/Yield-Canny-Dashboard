@@ -1,18 +1,43 @@
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
+import { supabase } from '@/integrations/supabase/client';
 
 const Landing = () => {
   const [isYearly, setIsYearly] = useState(true);
   const [loading, setLoading] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  // Check if user is logged in on mount
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setUserEmail(session.user.email);
+      }
+    };
+    checkUser();
+  }, []);
 
   const handleCheckout = async (plan: PricingPlan) => {
     try {
+      // Get current user email
+      const { data: { session } } = await supabase.auth.getSession();
+      const email = session?.user?.email;
+
+      if (!email) {
+        // Redirect to auth if not logged in
+        alert('Please sign in first to upgrade your plan.');
+        navigate('/auth');
+        return;
+      }
+
       setLoading(plan);
-      await redirectToCheckout(plan);
+      await redirectToCheckout(plan, email);
     } catch (error) {
       console.error('Checkout failed:', error);
       alert('Failed to start checkout. Please try again.');
