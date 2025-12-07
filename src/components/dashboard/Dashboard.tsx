@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DashboardHeader } from './DashboardHeader';
 import { KillerStats } from './KillerStats';
 import { ETFTable } from './ETFTable';
@@ -7,6 +7,7 @@ import { UpgradeModal } from './UpgradeModal';
 import { useETFs } from '@/hooks/useETFs';
 import { useUserSubscription } from '@/hooks/useUserSubscription';
 import { CanaryStatus } from '@/types/etf';
+import { supabase } from '@/integrations/supabase/client';
 
 export function Dashboard() {
   const { etfs, loading, error } = useETFs();
@@ -14,8 +15,20 @@ export function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<CanaryStatus | 'all'>('all');
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   const isPaid = subscriptionUser?.is_paid || false;
+
+  // Get user email from session
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email) {
+        setUserEmail(user.email);
+      }
+    };
+    getUser();
+  }, []);
 
   // Filter ETFs
   const filteredETFs = useMemo(() => {
@@ -62,6 +75,7 @@ export function Dashboard() {
     <div className="min-h-screen bg-background">
       <DashboardHeader
         isPaid={isPaid}
+        userEmail={userEmail}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onUpgrade={() => setIsUpgradeModalOpen(true)}
