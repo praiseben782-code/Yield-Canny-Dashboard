@@ -13,6 +13,8 @@ export interface UserSubscription {
   updated_at: string;
 }
 
+
+
 export function useUserSubscription() {
   const [user, setUser] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
