@@ -88,17 +88,28 @@ export default function Auth() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+          },
         });
         if (error) {
           console.error("Sign up error:", error);
           throw new Error(error.message);
         }
         console.log("Sign up successful:", data.user?.email);
-        setSuccessMessage("Account created! Signing you in...");
-        setEmail("");
-        setPassword("");
-        // Auto-sign in after signup
-        setTimeout(() => setIsLogin(true), 1000);
+        
+        // Check if email confirmation is required
+        if (data.user && !data.session) {
+          setSuccessMessage("Check your email to verify your account, then you can sign in.");
+          setEmail("");
+          setPassword("");
+        } else {
+          // Auto-sign in if no email verification needed
+          setSuccessMessage("Account created! Signing you in...");
+          setEmail("");
+          setPassword("");
+          setTimeout(() => setIsLogin(true), 1000);
+        }
       }
     } catch (error: any) {
       console.error("Auth error:", error);
