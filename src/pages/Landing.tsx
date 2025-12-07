@@ -267,7 +267,7 @@ const Landing = () => {
               <PricingCard 
                 name="Test Access"
                 description="One-time payment"
-                price="$1"
+                price="$0.30"
                 period="/ one-time"
                 features={[
                   "Full access to all metrics",
@@ -275,7 +275,7 @@ const Landing = () => {
                   "Canary Status for all ETFs",
                   "No recurring charges",
                 ]}
-                buttonText="Test with $1"
+                buttonText="Test with $0.30"
                 buttonVariant="outline"
                 onCheckout={() => handleCheckout('one_dollar')}
                 isLoading={loading === 'one_dollar'}

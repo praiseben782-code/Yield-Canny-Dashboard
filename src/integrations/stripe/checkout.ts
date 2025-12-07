@@ -90,7 +90,7 @@ export function getPlanPrice(plan: PricingPlan): string {
     case 'advanced_yearly':
       return '$189/year';
     case 'one_dollar':
-      return '$1.00';
+      return '$0.30';
     default:
       return '$0';
   }
