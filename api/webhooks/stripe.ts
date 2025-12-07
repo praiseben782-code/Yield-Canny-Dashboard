@@ -17,6 +17,7 @@ const priceToTierMap: Record<string, string> = {
   [process.env.VITE_BASIC_YEARLY_PRICE || '']: 'basic',
   [process.env.VITE_ADVANCED_MONTHLY_PRICE || '']: 'advanced',
   [process.env.VITE_ADVANCED_YEARLY_PRICE || '']: 'advanced',
+  [process.env.VITE_ONE_DOLLAR_PRICE || '']: 'advanced', // One-time payment grants advanced access
 };
 
 export default async function handler(
@@ -106,6 +107,30 @@ export default async function handler(
         const invoice = event.data.object as Stripe.Invoice;
         const email = invoice.customer_email;
         console.log(`Payment failed for ${email}, invoice ${invoice.id}`);
+        break;
+      }
+
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const email = session.customer_email;
+        
+        // Handle one-time payments (payment mode)
+        if (session.mode === 'payment' && email && session.payment_status === 'paid') {
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({
+              is_paid: true,
+              subscription_tier: 'advanced',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('email', email);
+
+          if (updateError) {
+            console.error('Error updating user after one-time payment:', updateError);
+          } else {
+            console.log(`User ${email} one-time payment completed`);
+          }
+        }
         break;
       }
 

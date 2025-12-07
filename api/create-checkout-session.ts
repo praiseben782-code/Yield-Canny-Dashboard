@@ -17,7 +17,11 @@ const priceIdMap: Record<string, string> = {
   basic_yearly: process.env.VITE_BASIC_YEARLY_PRICE || '',
   advanced_monthly: process.env.VITE_ADVANCED_MONTHLY_PRICE || '',
   advanced_yearly: process.env.VITE_ADVANCED_YEARLY_PRICE || '',
+  one_dollar: process.env.VITE_ONE_DOLLAR_PRICE || '',
 };
+
+// Plans that are one-time payments (not subscriptions)
+const oneTimePrices = [process.env.VITE_ONE_DOLLAR_PRICE || ''];
 
 
 
@@ -81,9 +85,13 @@ export default async function handler(
       });
     }
 
+    // Determine if this is a one-time payment or subscription
+    const isOneTime = oneTimePrices.includes(actualPriceId);
+    const mode = isOneTime ? 'payment' : 'subscription';
+
     // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+    const sessionConfig: Stripe.Checkout.SessionCreateParams = {
+      mode: mode,
       line_items: [
         {
           price: actualPriceId,
@@ -93,12 +101,18 @@ export default async function handler(
       customer_email: email,
       success_url: successUrl,
       cancel_url: cancelUrl,
-      subscription_data: {
+    };
+
+    // Only add subscription_data for subscription mode
+    if (!isOneTime) {
+      sessionConfig.subscription_data = {
         metadata: {
           user_email: email,
         },
-      },
-    });
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json({ sessionId: session.id, url: session.url });
