@@ -95,6 +95,70 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
     return `$${value.toFixed(2)}`;
   };
 
+  const escapeCSV = (value: string | number | null | undefined) => {
+    if (value === null || value === undefined) return '';
+    const stringValue = String(value);
+    if (/[",\n]/.test(stringValue)) {
+      return `"${stringValue.replace(/"/g, '""')}"`;
+    }
+    return stringValue;
+  };
+
+  const handleExportCSV = () => {
+    if (!isPaid) {
+      onUpgrade();
+      return;
+    }
+
+    const headers = [
+      'Ticker',
+      'Name',
+      'Canary Status',
+      'Death Clock (years)',
+      'True Income Yield',
+      'Total Return 1Y',
+      'Take-Home Cash 1Y',
+      'Latest Price',
+      'Headline Yield',
+      'ROC %',
+      'AUM',
+      'Expense Ratio',
+    ];
+
+    const rows = sortedETFs.map((etf) => [
+      etf.ticker,
+      etf.name,
+      etf.canaryStatus,
+      etf.deathClock,
+      etf.trueIncomeYield ?? '',
+      etf.totalReturn1Y ?? '',
+      etf.takeHomeCashReturn1Y ?? '',
+      etf.latestAdjClose ?? '',
+      etf.headlineYieldTTM ?? '',
+      etf.rocPercent ?? '',
+      etf.aum ?? '',
+      etf.expenseRatio ?? '',
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((row) => row.map(escapeCSV).join(','))
+      .join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `yield-canary-etfs-${new Date().toISOString().split('T')[0]}.csv`
+    );
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const SortableHeader = ({ 
     label, 
     sortKeyProp, 
@@ -134,7 +198,13 @@ export function ETFTable({ etfs, isPaid, onUpgrade }: ETFTableProps) {
           </span>
         </div>
         {isPaid && (
-          <Button variant="outline" size="sm" className="gap-2 text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 text-xs sm:text-sm h-8 sm:h-10 px-2 sm:px-4"
+            onClick={handleExportCSV}
+            disabled={!sortedETFs.length}
+          >
             <Download className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden xs:inline">Export CSV</span>
           </Button>
