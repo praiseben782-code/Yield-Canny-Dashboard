@@ -7,7 +7,10 @@ const PRICE_IDS: Record<PricingPlan, string> = {
   basic_yearly: import.meta.env.VITE_BASIC_YEARLY_PRICE || '',
   advanced_monthly: import.meta.env.VITE_ADVANCED_MONTHLY_PRICE || '',
   advanced_yearly: import.meta.env.VITE_ADVANCED_YEARLY_PRICE || '',
-  one_dollar: import.meta.env.VITE_ONE_DOLLAR_PRICE || '',
+  one_dollar:
+    import.meta.env.VITE_HALF_DOLLAR_PRICE ||
+    import.meta.env.VITE_ONE_DOLLAR_PRICE ||
+    '',
 };
 
 export async function redirectToCheckout(plan: PricingPlan, email?: string) {

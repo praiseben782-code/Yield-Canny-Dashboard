@@ -17,8 +17,14 @@ const priceToTierMap: Record<string, string> = {
   [process.env.VITE_BASIC_YEARLY_PRICE || '']: 'basic',
   [process.env.VITE_ADVANCED_MONTHLY_PRICE || '']: 'advanced',
   [process.env.VITE_ADVANCED_YEARLY_PRICE || '']: 'advanced',
-  [process.env.VITE_ONE_DOLLAR_PRICE || '']: 'advanced', // One-time payment grants advanced access
 };
+
+const trialPriceId =
+  process.env.VITE_HALF_DOLLAR_PRICE || process.env.VITE_ONE_DOLLAR_PRICE || '';
+
+if (trialPriceId) {
+  priceToTierMap[trialPriceId] = 'advanced';
+}
 
 export default async function handler(
   req: VercelRequest,

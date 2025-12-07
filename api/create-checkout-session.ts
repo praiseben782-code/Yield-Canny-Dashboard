@@ -17,11 +17,17 @@ const priceIdMap: Record<string, string> = {
   basic_yearly: process.env.VITE_BASIC_YEARLY_PRICE || '',
   advanced_monthly: process.env.VITE_ADVANCED_MONTHLY_PRICE || '',
   advanced_yearly: process.env.VITE_ADVANCED_YEARLY_PRICE || '',
-  one_dollar: process.env.VITE_ONE_DOLLAR_PRICE || '',
+  one_dollar:
+    process.env.VITE_HALF_DOLLAR_PRICE ||
+    process.env.VITE_ONE_DOLLAR_PRICE ||
+    '',
 };
 
 // Plans that are one-time payments (not subscriptions)
-const oneTimePrices = [process.env.VITE_ONE_DOLLAR_PRICE || ''];
+const oneTimePrices = [
+  process.env.VITE_HALF_DOLLAR_PRICE,
+  process.env.VITE_ONE_DOLLAR_PRICE,
+].filter(Boolean) as string[];
 
 
 

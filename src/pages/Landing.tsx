@@ -1,11 +1,20 @@
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield, Moon, Sun, X } from 'lucide-react';
+import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield, Moon, Sun, X, LogOut, User } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Landing = () => {
   const [isYearly, setIsYearly] = useState(true);
@@ -16,7 +25,7 @@ const Landing = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'cancelled' | null>(null);
 
-  // Check if user is logged in on mount and handle payment redirects
+  // Load user session on mount
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -24,17 +33,35 @@ const Landing = () => {
         setUserEmail(session.user.email);
       }
     };
-    
-    // Check payment status
+
+    checkUser();
+  }, []);
+
+  // Subscribe to auth changes so nav stays in sync
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+
+    return () => subscription?.unsubscribe();
+  }, []);
+
+  // Handle payment status query param
+  useEffect(() => {
     const payment = searchParams.get('payment');
     if (payment === 'success' || payment === 'cancelled') {
       setPaymentStatus(payment as 'success' | 'cancelled');
-      // Clean up URL
-      setSearchParams({});
+      const cleanedParams = new URLSearchParams(searchParams);
+      cleanedParams.delete('payment');
+      setSearchParams(cleanedParams);
     }
-    
-    checkUser();
   }, [searchParams, setSearchParams]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUserEmail(null);
+    navigate('/');
+  };
 
   const handleCheckout = async (plan: PricingPlan) => {
     try {
@@ -88,12 +115,66 @@ const Landing = () => {
                   <Moon className="h-4 w-4 xs:h-5 xs:w-5 text-foreground" />
                 )}
               </button>
-              <Link to="/auth" className="hidden xs:inline">
-                <Button variant="ghost" className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Login</Button>
-              </Link>
-              <Link to="/auth">
-                <Button className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Get Started</Button>
-              </Link>
+              {userEmail ? (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    Dashboard
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-2 rounded-full border border-border px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
+                          <AvatarFallback className="text-sm font-semibold">
+                            {userEmail.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="hidden sm:flex flex-col text-left">
+                          <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Signed in</span>
+                          <span className="text-xs font-semibold text-foreground truncate max-w-[160px]">{userEmail}</span>
+                        </div>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-64">
+                      <DropdownMenuLabel>
+                        <div className="flex items-start gap-2">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="text-base font-semibold">
+                              {userEmail.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="space-y-1">
+                            <p className="text-xs text-muted-foreground">Account email</p>
+                            <p className="text-sm font-medium break-all">{userEmail}</p>
+                          </div>
+                        </div>
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={(event) => { event.preventDefault(); navigate('/dashboard'); }}>
+                        <User className="mr-2 h-4 w-4" /> View dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onSelect={(event) => { event.preventDefault(); handleSignOut(); }}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" /> Sign out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <>
+                  <Link to="/auth" className="hidden xs:inline">
+                    <Button variant="ghost" className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Login</Button>
+                  </Link>
+                  <Link to="/auth">
+                    <Button className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Get Started</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </nav>
