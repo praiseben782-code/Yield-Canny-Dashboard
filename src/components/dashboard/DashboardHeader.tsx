@@ -1,4 +1,4 @@
-import { Bird, Crown, Search, Bell, Settings, LogOut, ChevronLeft } from 'lucide-react';
+import { Bird, Crown, Search, Bell, Settings, LogOut, ChevronLeft, Moon, Sun } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
+import { useTheme } from '@/hooks/useTheme';
 
 interface DashboardHeaderProps {
   isPaid: boolean;
@@ -28,6 +29,7 @@ export function DashboardHeader({
   onSearchChange,
 }: DashboardHeaderProps) {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -78,6 +80,18 @@ export function DashboardHeader({
 
         {/* Actions */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
+
           {!isPaid && (
             <Button
               onClick={onUpgrade}

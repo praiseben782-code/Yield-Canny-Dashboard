@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Bird, ChevronLeft } from "lucide-react";
+import { Bird, ChevronLeft, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +17,7 @@ export default function Auth() {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -123,6 +125,19 @@ export default function Auth() {
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
+      </div>
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-5 w-5 text-foreground" />
+          ) : (
+            <Moon className="h-5 w-5 text-foreground" />
+          )}
+        </button>
       </div>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">

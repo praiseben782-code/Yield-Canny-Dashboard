@@ -1,16 +1,18 @@
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield } from 'lucide-react';
+import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield, Moon, Sun } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
 import { supabase } from '@/integrations/supabase/client';
+import { useTheme } from '@/hooks/useTheme';
 
 const Landing = () => {
   const [isYearly, setIsYearly] = useState(true);
   const [loading, setLoading] = useState<string | null>(null);
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const { theme, toggleTheme } = useTheme();
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -64,6 +66,17 @@ const Landing = () => {
               <span className="text-xl font-bold text-foreground">YieldCanary</span>
             </div>
             <div className="flex items-center gap-4">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5 text-foreground" />
+                ) : (
+                  <Moon className="h-5 w-5 text-foreground" />
+                )}
+              </button>
               <Link to="/auth">
                 <Button variant="ghost">Login</Button>
               </Link>
@@ -322,29 +335,31 @@ const PricingCard = ({
   onCheckout: () => void;
   isLoading?: boolean;
 }) => (
-  <div className={`rounded-lg p-8 ${featured ? 'border-2 border-foreground bg-muted/30' : 'border border-border bg-background'}`}>
-    <h3 className="text-xl font-bold text-foreground mb-1">{name}</h3>
-    <p className="text-sm text-muted-foreground mb-4">{description}</p>
-    <div className="mb-6">
-      <span className="text-4xl font-bold text-foreground">{price}</span>
-      <span className="text-muted-foreground">{period}</span>
+  <div className={`rounded-lg p-8 electric-card relative group transition-all duration-300 ${featured ? 'border-2 border-primary shadow-lg hover:shadow-xl scale-100 md:scale-105' : 'border border-border hover:border-primary/50 hover:shadow-md'}`}>
+    <div className="relative z-10">
+      <h3 className={`text-xl font-bold mb-1 ${featured ? 'text-primary electric-text' : 'text-foreground'}`}>{name}</h3>
+      <p className="text-sm text-muted-foreground mb-4">{description}</p>
+      <div className="mb-6">
+        <span className={`text-4xl font-bold ${featured ? 'electric-text' : 'text-foreground'}`}>{price}</span>
+        <span className="text-muted-foreground">{period}</span>
+      </div>
+      <Button 
+        className={`w-full mb-6 ${featured ? 'bg-gradient-to-r from-primary to-secondary hover:shadow-lg electric-glow' : ''}`}
+        variant={buttonVariant}
+        onClick={onCheckout}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Loading...' : buttonText}
+      </Button>
+      <ul className="space-y-3">
+        {features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-2">
+            <Check className={`h-5 w-5 shrink-0 mt-0.5 ${featured ? 'text-primary' : 'text-foreground'}`} />
+            <span className="text-sm text-foreground">{feature}</span>
+          </li>
+        ))}
+      </ul>
     </div>
-    <Button 
-      className="w-full mb-6" 
-      variant={buttonVariant}
-      onClick={onCheckout}
-      disabled={isLoading}
-    >
-      {isLoading ? 'Loading...' : buttonText}
-    </Button>
-    <ul className="space-y-3">
-      {features.map((feature, i) => (
-        <li key={i} className="flex items-start gap-2">
-          <Check className="h-5 w-5 text-foreground shrink-0 mt-0.5" />
-          <span className="text-sm text-foreground">{feature}</span>
-        </li>
-      ))}
-    </ul>
   </div>
 );
 
