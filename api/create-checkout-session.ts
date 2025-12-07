@@ -19,6 +19,8 @@ const priceIdMap: Record<string, string> = {
   advanced_yearly: process.env.VITE_ADVANCED_YEARLY_PRICE || '',
 };
 
+
+
 interface CheckoutRequestBody {
   priceId: string;
   email: string;
