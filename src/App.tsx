@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { AnimatedBackground } from "@/components/AnimatedBackground";
+import { ParticleBackground } from "@/components/ParticleBackground";
 import Landing from "./pages/Landing";
 import DashboardPage from "./pages/DashboardPage";
 import Auth from "./pages/Auth";
@@ -18,7 +18,7 @@ const App = () => (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <AnimatedBackground />
+          <ParticleBackground />
           <Toaster />
           <Sonner />
           <BrowserRouter>

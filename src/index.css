@@ -228,12 +228,57 @@
   }
 
   .electric-card {
-    @apply relative overflow-hidden bg-card/70 backdrop-blur-xl border border-border/50;
+    @apply relative overflow-hidden bg-card/70 backdrop-blur-xl border border-border/50 transition-all duration-300;
     background: linear-gradient(135deg, hsl(0 0% 100% / 0.95) 0%, hsl(210 50% 98% / 0.9) 100%);
+  }
+
+  .electric-card:hover {
+    @apply border-primary/70 shadow-lg;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px hsl(160 85% 38% / 0.2);
+  }
+
+  .electric-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px hsl(160 85% 38% / 0.3);
   }
 
   .dark .electric-card {
     background: linear-gradient(135deg, hsl(210 40% 14% / 0.95) 0%, hsl(210 40% 12% / 0.9) 100%);
+  }
+
+  .dark .electric-card:hover {
+    box-shadow: 0 15px 40px hsl(160 85% 38% / 0.3);
+  }
+
+  /* Button and interactive animations */
+  button {
+    @apply transition-all duration-200;
+  }
+
+  button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26, 156, 110, 0.15);
+  }
+
+  button:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 4px 12px rgba(26, 156, 110, 0.2);
+  }
+
+  /* Glow on focus */
+  button:focus-visible {
+    outline: 2px solid hsl(160 85% 38%);
+    outline-offset: 2px;
+  }
+
+  /* Card hover glow */
+  .card {
+    @apply transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply shadow-md;
   }
 
   .electric-card::before {

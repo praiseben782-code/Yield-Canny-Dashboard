@@ -105,7 +105,15 @@ const Landing = () => {
                   Get Started Free
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="text-lg px-8">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8"
+                onClick={() => {
+                  const pricingSection = document.getElementById('pricing');
+                  pricingSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 View Pricing
               </Button>
             </div>
@@ -184,7 +192,7 @@ const Landing = () => {
         </section>
 
         {/* Pricing */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -288,12 +296,21 @@ const Landing = () => {
 };
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="text-center p-6">
-    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
-      {icon}
+  <div className="text-center p-6 group">
+    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 electric-glow">
+      <div className="text-primary">
+        {icon}
+      </div>
     </div>
-    <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
-    <p className="text-muted-foreground">{description}</p>
+    <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">{title}</h3>
+    <p className="text-muted-foreground group-hover:text-foreground transition-colors">{description}</p>
+    
+    {/* Animated badge */}
+    <div className="mt-4 inline-block">
+      <div className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/30 animate-pulse-slow">
+        ✓ Live Tracking
+      </div>
+    </div>
   </div>
 );
 

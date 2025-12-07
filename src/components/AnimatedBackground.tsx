@@ -11,169 +11,124 @@ export function AnimatedBackground() {
     if (!ctx) return;
 
     // Set canvas size
-    const setCanvasSize = () => {
+    const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    setCanvasSize();
-    window.addEventListener('resize', setCanvasSize);
+    resizeCanvas();
 
-    // Particle system
-    const particles: Particle[] = [];
-    const electricityLines: ElectricityLine[] = [];
-
-    class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      alpha: number;
-      color: string;
-
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 1;
-        this.vy = (Math.random() - 0.5) * 1;
-        this.radius = Math.random() * 2 + 1;
-        this.alpha = Math.random() * 0.5 + 0.3;
-        this.color = Math.random() > 0.5
-          ? 'hsl(160, 85%, 38%)'
-          : 'hsl(200, 80%, 42%)';
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.alpha -= 0.002;
-
-        // Wrap around
-        if (this.x < 0) this.x = canvas.width;
-        if (this.x > canvas.width) this.x = 0;
-        if (this.y < 0) this.y = canvas.height;
-        if (this.y > canvas.height) this.y = 0;
-      }
-
-      draw(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
+    // Particles array
+    const particles: any[] = [];
+    
+    // Create initial particles
+    for (let i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        radius: Math.random() * 3 + 1,
+        alpha: Math.random() * 0.6 + 0.2,
+        color: Math.random() > 0.5 ? '#1a9c6e' : '#2563eb', // Green and Blue
+        maxAlpha: Math.random() * 0.6 + 0.2,
+      });
     }
 
-    class ElectricityLine {
-      x1: number;
-      y1: number;
-      x2: number;
-      y2: number;
-      alpha: number;
-      life: number;
-      maxLife: number;
-
-      constructor(x1: number, y1: number, x2: number, y2: number) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
-        this.alpha = 1;
-        this.life = 0;
-        this.maxLife = 30;
-      }
-
-      update() {
-        this.life++;
-        this.alpha = 1 - this.life / this.maxLife;
-      }
-
-      draw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = `hsla(160, 85%, 38%, ${this.alpha * 0.8})`;
-        ctx.lineWidth = 2 * this.alpha;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(this.x1, this.y1);
-        ctx.lineTo(this.x2, this.y2);
-        ctx.stroke();
-      }
-    }
-
-    // Initialize particles
-    for (let i = 0; i < 50; i++) {
-      particles.push(new Particle());
-    }
-
-    let frameCount = 0;
-
+    let animationId: number;
+    
     const animate = () => {
-      ctx.fillStyle = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'hsl(210, 40%, 8%)'
-        : 'hsl(210, 50%, 98%)';
+      // Get theme
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      // Clear canvas with theme color
+      ctx.fillStyle = isDark ? '#0f0a1a' : '#f9fbff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Update and draw particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        particles[i].update();
-        particles[i].draw(ctx);
+      particles.forEach((particle, index) => {
+        // Update position
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        
+        // Wrap around edges
+        if (particle.x < 0) particle.x = canvas.width;
+        if (particle.x > canvas.width) particle.x = 0;
+        if (particle.y < 0) particle.y = canvas.height;
+        if (particle.y > canvas.height) particle.y = 0;
 
-        if (particles[i].alpha <= 0) {
-          particles.splice(i, 1);
+        // Draw particle with glow
+        ctx.globalAlpha = particle.alpha;
+        ctx.fillStyle = particle.color;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw connecting lines between nearby particles
+      ctx.strokeStyle = 'rgba(26, 156, 110, 0.15)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 150) {
+            ctx.globalAlpha = (1 - distance / 150) * 0.3;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
         }
       }
 
-      // Add new particles
-      if (Math.random() < 0.3) {
-        particles.push(new Particle());
+      // Draw electricity arcs randomly
+      if (Math.random() < 0.05) {
+        const p1 = particles[Math.floor(Math.random() * particles.length)];
+        const p2 = particles[Math.floor(Math.random() * particles.length)];
+        
+        ctx.globalAlpha = 0.6;
+        ctx.strokeStyle = '#1a9c6e';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#1a9c6e';
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
       }
 
-      // Update and draw electricity lines
-      for (let i = electricityLines.length - 1; i >= 0; i--) {
-        electricityLines[i].update();
-        electricityLines[i].draw(ctx);
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
 
-        if (electricityLines[i].life >= electricityLines[i].maxLife) {
-          electricityLines.splice(i, 1);
-        }
-      }
-
-      // Create electricity arcs periodically
-      frameCount++;
-      if (frameCount % 15 === 0 && Math.random() < 0.4) {
-        const startX = Math.random() * canvas.width;
-        const startY = Math.random() * canvas.height;
-        const endX = startX + (Math.random() - 0.5) * 300;
-        const endY = startY + (Math.random() - 0.5) * 300;
-
-        // Create branching electricity
-        electricityLines.push(new ElectricityLine(startX, startY, endX, endY));
-
-        // Add branches
-        if (Math.random() < 0.5) {
-          const branchX = startX + (endX - startX) * 0.5;
-          const branchY = startY + (endY - startY) * 0.5;
-          const branchEndX = branchX + (Math.random() - 0.5) * 200;
-          const branchEndY = branchY + (Math.random() - 0.5) * 200;
-          electricityLines.push(new ElectricityLine(branchX, branchY, branchEndX, branchEndY));
-        }
-      }
-
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
 
     animate();
 
+    // Handle resize
+    const handleResize = () => {
+      resizeCanvas();
+    };
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      window.removeEventListener('resize', setCanvasSize);
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10"
-      style={{ display: 'block' }}
+      className="fixed top-0 left-0 w-full h-full pointer-events-none"
+      style={{ 
+        display: 'block',
+        zIndex: -1000,
+      }}
     />
   );
 }
