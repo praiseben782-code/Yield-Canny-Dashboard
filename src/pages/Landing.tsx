@@ -60,55 +60,55 @@ const Landing = () => {
       <div className="min-h-screen bg-background">
         {/* Navigation */}
         <nav className="border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🐤</span>
-              <span className="text-xl font-bold text-foreground">YieldCanary</span>
+          <div className="max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <span className="text-lg xs:text-xl sm:text-2xl">🐤</span>
+              <span className="text-sm xs:text-base sm:text-lg font-bold text-foreground hidden xs:inline">YieldCanary</span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 xs:gap-3">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg hover:bg-muted transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-muted transition-colors flex-shrink-0"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-5 w-5 text-foreground" />
+                  <Sun className="h-4 w-4 xs:h-5 xs:w-5 text-foreground" />
                 ) : (
-                  <Moon className="h-5 w-5 text-foreground" />
+                  <Moon className="h-4 w-4 xs:h-5 xs:w-5 text-foreground" />
                 )}
               </button>
-              <Link to="/auth">
-                <Button variant="ghost">Login</Button>
+              <Link to="/auth" className="hidden xs:inline">
+                <Button variant="ghost" className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Login</Button>
               </Link>
               <Link to="/auth">
-                <Button>Get Started</Button>
+                <Button className="text-xs sm:text-sm px-2 xs:px-3 sm:px-4 h-8 xs:h-9 sm:h-10">Get Started</Button>
               </Link>
             </div>
           </div>
         </nav>
 
         {/* Hero Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
+            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-4 sm:mb-6">
               The smartest way to invest in high-yield funds.
             </h1>
-            <p className="text-xl text-muted-foreground mb-4">
+            <p className="text-base xs:text-lg sm:text-xl text-muted-foreground mb-2 sm:mb-4 px-2">
               Most high-yield ETFs quietly give you your own money back and call it income.
             </p>
-            <p className="text-xl font-semibold text-foreground mb-8">
+            <p className="text-base xs:text-lg sm:text-xl font-semibold text-foreground mb-6 sm:mb-8 px-2">
               We name the dying ones — and show exactly how many years they have left.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center">
               <Link to="/auth">
-                <Button size="lg" className="text-lg px-8">
+                <Button size="lg" className="text-sm sm:text-base px-6 sm:px-8 w-full xs:w-auto">
                   Get Started Free
                 </Button>
               </Link>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="text-lg px-8"
+                className="text-sm sm:text-base px-6 sm:px-8 w-full xs:w-auto"
                 onClick={() => {
                   const pricingSection = document.getElementById('pricing');
                   pricingSection?.scrollIntoView({ behavior: 'smooth' });
@@ -121,38 +121,38 @@ const Landing = () => {
         </section>
 
         {/* Value Proposition */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-foreground mb-3 sm:mb-4">
               The Only Tool That Tells You When a High-Yield ETF Is Dying
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-sm xs:text-base sm:text-lg text-muted-foreground px-2">
               No fluff. No 40-page PDFs. Just the cold, hard truth about your "income" funds.
             </p>
           </div>
         </section>
 
         {/* Features */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               <FeatureCard 
-                icon={<TrendingDown className="h-8 w-8" />}
+                icon={<TrendingDown className="h-6 xs:h-7 sm:h-8 w-6 xs:w-7 sm:w-8" />}
                 title="True Income Yield"
                 description="The real yield after stripping out return-of-capital. Not the marketing number."
               />
               <FeatureCard 
-                icon={<Clock className="h-8 w-8" />}
+                icon={<Clock className="h-6 xs:h-7 sm:h-8 w-6 xs:w-7 sm:w-8" />}
                 title="Death Clock"
                 description="Exact number of years until 50% NAV erosion at the current ROC bleed rate."
               />
               <FeatureCard 
-                icon={<AlertTriangle className="h-8 w-8" />}
+                icon={<AlertTriangle className="h-6 xs:h-7 sm:h-8 w-6 xs:w-7 sm:w-8" />}
                 title="Canary Status"
                 description="Alive / Dying / Dead status at a glance. Green means safe. Red means run."
               />
               <FeatureCard 
-                icon={<Shield className="h-8 w-8" />}
+                icon={<Shield className="h-6 xs:h-7 sm:h-8 w-6 xs:w-7 sm:w-8" />}
                 title="Live ROC %"
                 description="Monthly updates from actual 19a-1 filings. No guessing, no estimates."
               />
@@ -161,17 +161,17 @@ const Landing = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+            <div className="text-center mb-8 sm:mb-12">
+              <p className="text-xs xs:text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
                 Real Results | Real People
               </p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+              <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-foreground">
                 Hear from others using YieldCanary!
               </h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               <TestimonialCard 
                 quote="Finally someone just says it out loud — half my 'high-yield' funds are dying. Sold three positions the day I saw the Death Clock under 4 years. Thank you."
                 name="Morgan James"
@@ -192,36 +192,52 @@ const Landing = () => {
         </section>
 
         {/* Pricing */}
-        <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">
+        <section id="pricing" className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-foreground mb-2 sm:mb-4">
                 Pricing for every investor
               </h2>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-sm xs:text-base sm:text-lg text-muted-foreground px-2">
                 Stop guessing which high-yield ETFs are actually safe.<br />
                 Choose the plan that fits your portfolio.
               </p>
             </div>
             
-            <div className="flex justify-center gap-4 mb-12">
+            <div className="flex justify-center gap-2 xs:gap-3 mb-8 sm:mb-12">
               <Button 
                 variant={!isYearly ? "default" : "outline"} 
-                className="rounded-full"
+                className="rounded-full text-xs xs:text-sm px-4 xs:px-6 h-9 xs:h-10"
                 onClick={() => setIsYearly(false)}
               >
                 Monthly
               </Button>
               <Button 
                 variant={isYearly ? "default" : "outline"} 
-                className="rounded-full"
+                className="rounded-full text-xs xs:text-sm px-4 xs:px-6 h-9 xs:h-10"
                 onClick={() => setIsYearly(true)}
               >
                 Yearly (Save 17%)
               </Button>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+              <PricingCard 
+                name="Test Access"
+                description="One-time payment"
+                price="$1"
+                period="/ one-time"
+                features={[
+                  "Full access to all metrics",
+                  "True Income Yield & Death Clock",
+                  "Canary Status for all ETFs",
+                  "No recurring charges",
+                ]}
+                buttonText="Test with $1"
+                buttonVariant="outline"
+                onCheckout={() => handleCheckout('one_dollar')}
+                isLoading={loading === 'one_dollar'}
+              />
               <PricingCard 
                 name="Free"
                 description="For anyone to get started"
@@ -279,13 +295,13 @@ const Landing = () => {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-border py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <footer className="border-t border-border py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-xl">🐤</span>
-              <span className="font-bold text-foreground">YieldCanary</span>
+              <span className="text-lg xs:text-xl">🐤</span>
+              <span className="text-sm xs:text-base font-bold text-foreground">YieldCanary</span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs xs:text-sm text-muted-foreground text-center sm:text-right">
               © 2024 YieldCanary. All rights reserved.
             </p>
           </div>
@@ -296,18 +312,18 @@ const Landing = () => {
 };
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="text-center p-6 group">
-    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 electric-glow">
+  <div className="text-center p-3 xs:p-4 sm:p-6 group">
+    <div className="inline-flex items-center justify-center w-12 xs:w-14 h-12 xs:h-14 sm:w-16 sm:h-16 rounded-full bg-muted mb-2 xs:mb-3 sm:mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110 electric-glow">
       <div className="text-primary">
         {icon}
       </div>
     </div>
-    <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">{title}</h3>
-    <p className="text-muted-foreground group-hover:text-foreground transition-colors">{description}</p>
+    <h3 className="text-base xs:text-lg sm:text-xl font-semibold text-foreground mb-1 sm:mb-2 group-hover:text-primary transition-colors">{title}</h3>
+    <p className="text-xs xs:text-sm sm:text-base text-muted-foreground group-hover:text-foreground transition-colors px-1">{description}</p>
     
     {/* Animated badge */}
-    <div className="mt-4 inline-block">
-      <div className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/30 animate-pulse-slow">
+    <div className="mt-2 xs:mt-3 sm:mt-4 inline-block">
+      <div className="px-2 xs:px-3 py-0.5 xs:py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/30 animate-pulse-slow">
         ✓ Live Tracking
       </div>
     </div>
@@ -315,16 +331,16 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
 );
 
 const TestimonialCard = ({ quote, name, title }: { quote: string; name: string; title: string }) => (
-  <div className="bg-background border border-border rounded-lg p-6">
-    <div className="flex gap-1 mb-4">
+  <div className="bg-background border border-border rounded-lg p-4 xs:p-5 sm:p-6">
+    <div className="flex gap-1 mb-3 xs:mb-4">
       {[...Array(5)].map((_, i) => (
-        <Star key={i} className="h-5 w-5 fill-foreground text-foreground" />
+        <Star key={i} className="h-4 xs:h-5 w-4 xs:w-5 fill-foreground text-foreground" />
       ))}
     </div>
-    <p className="text-foreground mb-6">"{quote}"</p>
+    <p className="text-xs xs:text-sm sm:text-base text-foreground mb-4 xs:mb-6">"{quote}"</p>
     <div>
-      <p className="font-semibold text-foreground">{name}</p>
-      <p className="text-sm text-muted-foreground">{title}</p>
+      <p className="text-sm xs:text-base font-semibold text-foreground">{name}</p>
+      <p className="text-xs xs:text-sm text-muted-foreground">{title}</p>
     </div>
   </div>
 );
@@ -352,27 +368,27 @@ const PricingCard = ({
   onCheckout: () => void;
   isLoading?: boolean;
 }) => (
-  <div className={`rounded-lg p-8 electric-card relative group transition-all duration-300 ${featured ? 'border-2 border-primary shadow-lg hover:shadow-xl scale-100 md:scale-105' : 'border border-border hover:border-primary/50 hover:shadow-md'}`}>
+  <div className={`rounded-lg p-4 xs:p-6 sm:p-8 electric-card relative group transition-all duration-300 ${featured ? 'border-2 border-primary shadow-lg hover:shadow-xl scale-100 md:scale-105' : 'border border-border hover:border-primary/50 hover:shadow-md'}`}>
     <div className="relative z-10">
-      <h3 className={`text-xl font-bold mb-1 ${featured ? 'text-primary electric-text' : 'text-foreground'}`}>{name}</h3>
-      <p className="text-sm text-muted-foreground mb-4">{description}</p>
-      <div className="mb-6">
-        <span className={`text-4xl font-bold ${featured ? 'electric-text' : 'text-foreground'}`}>{price}</span>
-        <span className="text-muted-foreground">{period}</span>
+      <h3 className={`text-lg xs:text-xl font-bold mb-1 ${featured ? 'text-primary electric-text' : 'text-foreground'}`}>{name}</h3>
+      <p className="text-xs xs:text-sm text-muted-foreground mb-3 xs:mb-4">{description}</p>
+      <div className="mb-4 xs:mb-6">
+        <span className={`text-3xl xs:text-4xl font-bold ${featured ? 'electric-text' : 'text-foreground'}`}>{price}</span>
+        <span className="text-xs xs:text-sm text-muted-foreground">{period}</span>
       </div>
       <Button 
-        className={`w-full mb-6 ${featured ? 'bg-gradient-to-r from-primary to-secondary hover:shadow-lg electric-glow' : ''}`}
+        className={`w-full mb-4 xs:mb-6 text-xs xs:text-sm ${featured ? 'bg-gradient-to-r from-primary to-secondary hover:shadow-lg electric-glow' : ''}`}
         variant={buttonVariant}
         onClick={onCheckout}
         disabled={isLoading}
       >
         {isLoading ? 'Loading...' : buttonText}
       </Button>
-      <ul className="space-y-3">
+      <ul className="space-y-2 xs:space-y-3">
         {features.map((feature, i) => (
           <li key={i} className="flex items-start gap-2">
-            <Check className={`h-5 w-5 shrink-0 mt-0.5 ${featured ? 'text-primary' : 'text-foreground'}`} />
-            <span className="text-sm text-foreground">{feature}</span>
+            <Check className={`h-4 xs:h-5 w-4 xs:w-5 shrink-0 mt-0.5 ${featured ? 'text-primary' : 'text-foreground'}`} />
+            <span className="text-xs xs:text-sm text-foreground">{feature}</span>
           </li>
         ))}
       </ul>

@@ -1,12 +1,13 @@
 import { stripePromise } from './client';
 
-export type PricingPlan = 'basic_monthly' | 'basic_yearly' | 'advanced_monthly' | 'advanced_yearly';
+export type PricingPlan = 'basic_monthly' | 'basic_yearly' | 'advanced_monthly' | 'advanced_yearly' | 'one_dollar';
 
 const PRICE_IDS: Record<PricingPlan, string> = {
   basic_monthly: import.meta.env.VITE_BASIC_MONTHLY_PRICE || '',
   basic_yearly: import.meta.env.VITE_BASIC_YEARLY_PRICE || '',
   advanced_monthly: import.meta.env.VITE_ADVANCED_MONTHLY_PRICE || '',
   advanced_yearly: import.meta.env.VITE_ADVANCED_YEARLY_PRICE || '',
+  one_dollar: import.meta.env.VITE_ONE_DOLLAR_PRICE || '',
 };
 
 export async function redirectToCheckout(plan: PricingPlan, email?: string) {
@@ -71,6 +72,8 @@ export function getPlanName(plan: PricingPlan): string {
       return 'Advanced - Monthly';
     case 'advanced_yearly':
       return 'Advanced - Yearly';
+    case 'one_dollar':
+      return 'One-Time Access';
     default:
       return 'Unknown Plan';
   }
@@ -86,6 +89,8 @@ export function getPlanPrice(plan: PricingPlan): string {
       return '$19/month';
     case 'advanced_yearly':
       return '$189/year';
+    case 'one_dollar':
+      return '$1.00';
     default:
       return '$0';
   }

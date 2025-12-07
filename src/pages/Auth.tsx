@@ -115,62 +115,62 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="absolute top-4 left-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-3 xs:p-4">
+      <div className="absolute top-3 xs:top-4 left-3 xs:left-4">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate('/')}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground h-8 w-8 xs:h-10 xs:w-10"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4 xs:h-5 xs:w-5" />
         </Button>
       </div>
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-3 xs:top-4 right-3 xs:right-4">
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className="p-1.5 xs:p-2 rounded-lg hover:bg-muted transition-colors"
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? (
-            <Sun className="h-5 w-5 text-foreground" />
+            <Sun className="h-4 w-4 xs:h-5 xs:w-5 text-foreground" />
           ) : (
-            <Moon className="h-5 w-5 text-foreground" />
+            <Moon className="h-4 w-4 xs:h-5 xs:w-5 text-foreground" />
           )}
         </button>
       </div>
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 xs:mb-8">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center justify-center gap-2 mb-4 mx-auto hover:opacity-80 transition-opacity"
+            className="flex items-center justify-center gap-2 mb-3 xs:mb-4 mx-auto hover:opacity-80 transition-opacity"
           >
-            <Bird className="h-8 w-8 text-foreground" />
-            <span className="text-2xl font-bold text-foreground">YieldCanary</span>
+            <Bird className="h-6 xs:h-8 w-6 xs:w-8 text-foreground" />
+            <span className="text-lg xs:text-2xl font-bold text-foreground">YieldCanary</span>
           </button>
-          <h1 className="text-2xl font-semibold text-foreground">
+          <h1 className="text-xl xs:text-2xl font-semibold text-foreground">
             {isLogin ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-xs xs:text-sm text-muted-foreground mt-1 xs:mt-2">
             {isLogin
               ? "Sign in to access your dashboard"
               : "Start tracking your high-yield ETFs"}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 xs:space-y-4">
           {error && (
-            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-2 rounded text-sm">
+            <div className="bg-destructive/10 border border-destructive text-destructive px-3 xs:px-4 py-2 rounded text-xs xs:text-sm">
               {error}
             </div>
           )}
           {successMessage && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded text-sm">
+            <div className="bg-green-50 border border-green-200 text-green-700 px-3 xs:px-4 py-2 rounded text-xs xs:text-sm">
               {successMessage}
             </div>
           )}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-1.5 xs:space-y-2">
+            <Label htmlFor="email" className="text-xs xs:text-sm">Email</Label>
             <Input
               id="email"
               type="email"
@@ -178,11 +178,12 @@ export default function Auth() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="text-sm h-9 xs:h-10"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-1.5 xs:space-y-2">
+            <Label htmlFor="password" className="text-xs xs:text-sm">Password</Label>
             <Input
               id="password"
               type="password"
@@ -191,19 +192,20 @@ export default function Auth() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
+              className="text-sm h-9 xs:h-10"
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full text-sm xs:text-base h-9 xs:h-10" disabled={loading}>
             {loading ? "Loading..." : isLogin ? "Sign In" : "Sign Up"}
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 xs:mt-6 text-center">
           <button
             type="button"
             onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs xs:text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             {isLogin
               ? "Don't have an account? Sign up"

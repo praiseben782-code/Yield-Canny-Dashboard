@@ -81,13 +81,13 @@ export function Dashboard() {
         onUpgrade={() => setIsUpgradeModalOpen(true)}
       />
 
-      <main className="container px-4 md:px-6 py-6 space-y-6">
+      <main className="container px-2 xs:px-3 sm:px-4 md:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Hero Section */}
-        <div className="text-center space-y-2 py-4">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+        <div className="text-center space-y-1 sm:space-y-2 py-3 sm:py-4">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold tracking-tight text-foreground">
             Which ETFs are healthy vs quietly dying?
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm xs:text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
             See through the marketing. Know exactly what lands in your pocket after taxes.
           </p>
         </div>
@@ -110,11 +110,11 @@ export function Dashboard() {
         />
 
         {/* Footer */}
-        <footer className="text-center py-8 border-t border-border">
-          <p className="text-sm text-muted-foreground">
+        <footer className="text-center py-6 sm:py-8 border-t border-border text-xs sm:text-sm">
+          <p className="text-muted-foreground">
             Data updated daily. ROC data from 19a-1 filings.
           </p>
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-xs text-muted-foreground mt-1 sm:mt-2">
             © 2024 YieldCanary. Not financial advice.
           </p>
         </footer>
