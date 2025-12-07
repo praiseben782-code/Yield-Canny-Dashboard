@@ -29,7 +29,7 @@ export default function Auth() {
           return;
         }
         if (session?.user) {
-          navigate("/dashboard");
+          navigate("/");
         }
       } catch (err) {
         console.error("Error checking session:", err);
@@ -43,7 +43,7 @@ export default function Auth() {
       (event, session) => {
         console.log("Auth state changed:", event, session?.user?.email);
         if (session?.user) {
-          navigate("/dashboard");
+          navigate("/");
         }
       }
     );
@@ -82,14 +82,14 @@ export default function Auth() {
           throw new Error(error.message);
         }
         console.log("Sign in successful:", data.user?.email);
-        toast({ title: "Welcome back!", description: "Redirecting to dashboard..." });
+        toast({ title: "Welcome back!", description: "Taking you to the landing page..." });
       } else {
         console.log("Attempting sign up with:", email);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            emailRedirectTo: `${window.location.origin}/`,
           },
         });
         if (error) {
