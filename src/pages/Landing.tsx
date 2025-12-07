@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
-import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield, Moon, Sun } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Check, Star, AlertTriangle, Skull, Clock, TrendingDown, Shield, Moon, Sun, X } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,8 +13,10 @@ const Landing = () => {
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const { theme, toggleTheme } = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [paymentStatus, setPaymentStatus] = useState<'success' | 'cancelled' | null>(null);
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount and handle payment redirects
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -22,8 +24,17 @@ const Landing = () => {
         setUserEmail(session.user.email);
       }
     };
+    
+    // Check payment status
+    const payment = searchParams.get('payment');
+    if (payment === 'success' || payment === 'cancelled') {
+      setPaymentStatus(payment as 'success' | 'cancelled');
+      // Clean up URL
+      setSearchParams({});
+    }
+    
     checkUser();
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const handleCheckout = async (plan: PricingPlan) => {
     try {
@@ -86,6 +97,37 @@ const Landing = () => {
             </div>
           </div>
         </nav>
+
+        {/* Payment Status Alert */}
+        {paymentStatus === 'success' && (
+          <div className="bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Check className="h-5 w-5" />
+              <span className="text-sm">Payment successful! Your access has been upgraded. Refresh the dashboard to see all features.</span>
+            </div>
+            <button
+              onClick={() => setPaymentStatus(null)}
+              className="flex-shrink-0 hover:bg-green-500/20 p-1 rounded"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {paymentStatus === 'cancelled' && (
+          <div className="bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="text-sm">Payment was cancelled. No charges were made.</span>
+            </div>
+            <button
+              onClick={() => setPaymentStatus(null)}
+              className="flex-shrink-0 hover:bg-amber-500/20 p-1 rounded"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
 
         {/* Hero Section */}
         <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">

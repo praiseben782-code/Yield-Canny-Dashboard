@@ -33,8 +33,8 @@ export async function redirectToCheckout(plan: PricingPlan, email?: string) {
       body: JSON.stringify({
         priceId,
         email,
-        successUrl: `${window.location.origin}/dashboard`,
-        cancelUrl: `${window.location.origin}/`,
+        successUrl: `${window.location.origin}/?payment=success`,
+        cancelUrl: `${window.location.origin}/?payment=cancelled`,
       }),
     });
 

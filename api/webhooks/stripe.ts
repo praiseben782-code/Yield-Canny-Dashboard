@@ -43,31 +43,37 @@ export default async function handler(
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        const email = subscription.customer_email;
-        const stripeCustomerId = subscription.customer as string;
+        const customerId = typeof subscription.customer === 'string' 
+          ? subscription.customer 
+          : subscription.customer?.id;
 
-        if (email) {
-          // Get the price ID from the subscription
-          const priceId = subscription.items.data[0]?.price?.id;
-          const tier = priceId ? priceToTierMap[priceId] : 'basic';
+        if (customerId) {
+          // Fetch customer to get email
+          const customer = await stripe.customers.retrieve(customerId);
+          const email = (customer as Stripe.Customer).email;
 
-          // Update user's subscription status in Supabase
-          const { error: updateError } = await supabase
-            .from('users')
-            .update({
-              is_paid: true,
-              subscription_tier: tier,
-              stripe_customer_id: stripeCustomerId,
-              subscription_start: new Date(subscription.current_period_start * 1000).toISOString().split('T')[0],
-              subscription_end: new Date(subscription.current_period_end * 1000).toISOString().split('T')[0],
-              updated_at: new Date().toISOString(),
-            })
-            .eq('email', email);
+          if (email) {
+            // Get the price ID from the subscription
+            const priceId = subscription.items.data[0]?.price?.id;
+            const tier = priceId ? priceToTierMap[priceId] : 'basic';
 
-          if (updateError) {
-            console.error('Error updating user subscription:', updateError);
-          } else {
-            console.log(`User ${email} subscription updated: ${tier}`);
+            // Update user's subscription status in Supabase
+            const { error: updateError } = await supabase
+              .from('users')
+              .update({
+                is_paid: true,
+                subscription_tier: tier,
+                subscription_start: new Date(subscription.current_period_start * 1000).toISOString().split('T')[0],
+                subscription_end: new Date(subscription.current_period_end * 1000).toISOString().split('T')[0],
+                updated_at: new Date().toISOString(),
+              })
+              .eq('email', email);
+
+            if (updateError) {
+              console.error('Error updating user subscription:', updateError);
+            } else {
+              console.log(`User ${email} subscription updated: ${tier}`);
+            }
           }
         }
         break;
@@ -81,23 +87,31 @@ export default async function handler(
 
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
-        const email = subscription.customer_email;
+        const customerId = typeof subscription.customer === 'string' 
+          ? subscription.customer 
+          : subscription.customer?.id;
 
-        if (email) {
-          // Mark user as unpaid
-          const { error: updateError } = await supabase
-            .from('users')
-            .update({
-              is_paid: false,
-              subscription_tier: 'free',
-              updated_at: new Date().toISOString(),
-            })
-            .eq('email', email);
+        if (customerId) {
+          // Fetch customer to get email
+          const customer = await stripe.customers.retrieve(customerId);
+          const email = (customer as Stripe.Customer).email;
 
-          if (updateError) {
-            console.error('Error cancelling user subscription:', updateError);
-          } else {
-            console.log(`User ${email} subscription cancelled`);
+          if (email) {
+            // Mark user as unpaid
+            const { error: updateError } = await supabase
+              .from('users')
+              .update({
+                is_paid: false,
+                subscription_tier: 'free',
+                updated_at: new Date().toISOString(),
+              })
+              .eq('email', email);
+
+            if (updateError) {
+              console.error('Error cancelling user subscription:', updateError);
+            } else {
+              console.log(`User ${email} subscription cancelled`);
+            }
           }
         }
         break;
@@ -105,8 +119,15 @@ export default async function handler(
 
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
-        const email = invoice.customer_email;
-        console.log(`Payment failed for ${email}, invoice ${invoice.id}`);
+        const customerId = typeof invoice.customer === 'string' 
+          ? invoice.customer 
+          : invoice.customer?.id;
+        
+        if (customerId) {
+          const customer = await stripe.customers.retrieve(customerId);
+          const email = (customer as Stripe.Customer).email;
+          console.log(`Payment failed for ${email}, invoice ${invoice.id}`);
+        }
         break;
       }
 
@@ -114,9 +135,16 @@ export default async function handler(
         const session = event.data.object as Stripe.Checkout.Session;
         const email = session.customer_email;
         
+        console.log(`checkout.session.completed received:`, {
+          mode: session.mode,
+          email: email,
+          payment_status: session.payment_status,
+        });
+        
         // Handle one-time payments (payment mode)
         if (session.mode === 'payment' && email && session.payment_status === 'paid') {
-          const { error: updateError } = await supabase
+          console.log(`Processing one-time payment for ${email}`);
+          const { data, error: updateError } = await supabase
             .from('users')
             .update({
               is_paid: true,
@@ -128,8 +156,10 @@ export default async function handler(
           if (updateError) {
             console.error('Error updating user after one-time payment:', updateError);
           } else {
-            console.log(`User ${email} one-time payment completed`);
+            console.log(`User ${email} one-time payment completed successfully`, data);
           }
+        } else {
+          console.log(`Skipping checkout.session.completed - mode:${session.mode}, email:${email}, status:${session.payment_status}`);
         }
         break;
       }
