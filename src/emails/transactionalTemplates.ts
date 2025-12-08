@@ -13,10 +13,10 @@ export type TransactionalEmailTemplate = {
 export const transactionalEmailTemplates: TransactionalEmailTemplate[] = [
   {
     id: 'welcome_verify',
-    title: 'Welcome + Verify Email',
-    subject: 'Welcome to YieldCanary – confirm your email',
-    previewText: 'Confirm your email to unlock every high-yield ETF insight.',
-    body: `Hi {{first_name|there}},\nYou're one click away from seeing every high-yield ETFs with no illusions.\nConfirm your email address here:\n{{verification_link}}\nOnce confirmed, the full dashboard (including Canary Health colors) will unlock instantly.\nTalk soon,\nRyan Fish\nFounder, YieldCanary`,
+    title: 'Welcome Email',
+    subject: 'Welcome to YieldCanary!',
+    previewText: 'Your dashboard is ready. Explore every high-yield ETF insight.',
+    body: `Hi {{first_name|there}},\nWelcome to YieldCanary!\nYour account is now active and you can explore every high-yield ETF insight with no illusions.\nThe full dashboard (including Canary Health colors) is unlocked instantly.\nTalk soon,\nRyan Fish\nFounder, YieldCanary`,
   },
   {
     id: 'payment_receipt',

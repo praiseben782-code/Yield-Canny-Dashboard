@@ -63,12 +63,13 @@ export async function sendTransactionalEmail({
   const body = replacePlaceholders(template.body, normalizedData);
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: resendFromAddress,
       to,
       subject,
       text: body,
     });
+    console.log(`Transactional email (${templateId}) sent to ${to}. Result:`, result);
   } catch (error) {
     console.error(`Failed to send transactional email (${templateId}) to ${to}:`, error);
   }

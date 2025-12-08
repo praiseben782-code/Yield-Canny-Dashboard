@@ -1,4 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { sendTransactionalEmail } from '../lib/resend';
