@@ -1,9 +1,11 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { sendTransactionalEmail } from '../lib/resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-11-17.clover' 
+  // Cast because @types/stripe doesn't yet list this preview version
+  apiVersion: '2025-11-17.clover' as unknown as Stripe.LatestApiVersion,
 });
 
 const supabase = createClient(
@@ -59,6 +61,18 @@ export default async function handler(
           const email = (customer as Stripe.Customer).email;
 
           if (email) {
+            const { data: existingUser, error: fetchError } = await supabase
+              .from('users')
+              .select('is_paid')
+              .eq('email', email)
+              .maybeSingle();
+
+            if (fetchError) {
+              console.error('Error fetching user before subscription update:', fetchError);
+            }
+
+            const alreadyPaid = existingUser?.is_paid ?? false;
+
             // Get the price ID from the subscription
             const priceId = subscription.items.data[0]?.price?.id;
             const tier = priceId ? priceToTierMap[priceId] : 'basic';
@@ -79,6 +93,20 @@ export default async function handler(
               console.error('Error updating user subscription:', updateError);
             } else {
               console.log(`User ${email} subscription updated: ${tier}`);
+
+              if (event.type === 'customer.subscription.created') {
+                await sendTransactionalEmail({
+                  to: email,
+                  templateId: 'payment_receipt',
+                });
+              }
+
+              if (!alreadyPaid) {
+                await sendTransactionalEmail({
+                  to: email,
+                  templateId: 'access_upgraded',
+                });
+              }
             }
           }
         }
@@ -117,6 +145,10 @@ export default async function handler(
               console.error('Error cancelling user subscription:', updateError);
             } else {
               console.log(`User ${email} subscription cancelled`);
+              await sendTransactionalEmail({
+                to: email,
+                templateId: 'access_expired',
+              });
             }
           }
         }
@@ -150,6 +182,18 @@ export default async function handler(
         // Handle one-time payments (payment mode)
         if (session.mode === 'payment' && email && session.payment_status === 'paid') {
           console.log(`Processing one-time payment for ${email}`);
+          const { data: existingUser, error: fetchError } = await supabase
+            .from('users')
+            .select('is_paid')
+            .eq('email', email)
+            .maybeSingle();
+
+          if (fetchError) {
+            console.error('Error fetching user before one-time payment update:', fetchError);
+          }
+
+          const alreadyPaid = existingUser?.is_paid ?? false;
+
           const { data, error: updateError } = await supabase
             .from('users')
             .update({
@@ -163,6 +207,17 @@ export default async function handler(
             console.error('Error updating user after one-time payment:', updateError);
           } else {
             console.log(`User ${email} one-time payment completed successfully`, data);
+            await sendTransactionalEmail({
+              to: email,
+              templateId: 'payment_receipt',
+            });
+
+            if (!alreadyPaid) {
+              await sendTransactionalEmail({
+                to: email,
+                templateId: 'access_upgraded',
+              });
+            }
           }
         } else {
           console.log(`Skipping checkout.session.completed - mode:${session.mode}, email:${email}, status:${session.payment_status}`);
