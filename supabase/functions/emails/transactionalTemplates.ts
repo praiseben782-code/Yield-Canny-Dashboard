@@ -202,29 +202,648 @@ export const transactionalEmailTemplates: TransactionalEmailTemplate[] = [
   {
     id: 'payment_receipt',
     title: 'Payment Receipt / Unlock notice',
-    subject: 'You’re in! YieldCanary Pro is now unlocked!',
+    subject: 'You are in! YieldCanary Pro is now unlocked!',
     previewText: 'Death Clock, True Income Yield, and Take-Home Cash Return are now visible.',
-    body: `Hey {{first_name}},\nWelcome to the real numbers. The blur is gone and you now see:\n• Death Clock on every ETF\n• True Income Yield after ROC\n• Take-Home Cash Return after taxes\n\nYour dashboard → https://app.yieldcanary.com\nLet’s go find some dead canaries,\n-YieldCanary HQ`,
+    body: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Confirmed - YieldCanary Pro</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9fafb;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      color: #1f2937;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .message {
+      font-size: 16px;
+      color: #4b5563;
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+    .feature-box {
+      background-color: #f0fdf4;
+      border-left: 4px solid #10b981;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 4px;
+    }
+    .feature-box h3 {
+      color: #1f2937;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .feature-box ul {
+      list-style: none;
+      padding: 0;
+    }
+    .feature-box li {
+      color: #374151;
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+    }
+    .feature-box li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #10b981;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 30px 0;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+    .signature {
+      font-size: 14px;
+      color: #1f2937;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .container { border-radius: 0; }
+      .content, .header { padding: 30px 20px; }
+      .header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="success-icon">🎉</div>
+      <h1>Payment Confirmed!</h1>
+      <p>YieldCanary Pro is Now Active</p>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">Hey {{first_name}},</p>
+      
+      <p class="message">
+        Welcome to the real numbers. The blur is <strong>gone</strong> — you now have full access to every metric we track.
+      </p>
+      
+      <div class="feature-box">
+        <h3>Your Pro Access Includes:</h3>
+        <ul>
+          <li><strong>Death Clock</strong> on every ETF</li>
+          <li><strong>True Income Yield</strong> after ROC</li>
+          <li><strong>Take-Home Cash Return</strong> after taxes</li>
+          <li><strong>Advanced Filtering</strong> & sorting</li>
+          <li><strong>Real-time Updates</strong> on all metrics</li>
+        </ul>
+      </div>
+      
+      <p style="text-align: center;">
+        <a href="https://yieldcanary.com" class="cta-button">Open Your Dashboard</a>
+      </p>
+      
+      <p class="message" style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+        Need help getting started? Just reply to this email and we'll guide you through it.
+      </p>
+    </div>
+    
+    <div class="footer">
+      <p class="footer-text">Questions? Reply to this email anytime.</p>
+      <p class="signature">
+        Let's go find some dead canaries,<br>
+        <span style="color: #2563eb; font-weight: 600;">Ryan Fish</span><br>
+        Founder, YieldCanary
+      </p>
+      <p class="footer-text" style="margin-top: 20px; font-size: 12px;">
+        © 2024 YieldCanary. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
   },
   {
     id: 'access_upgraded',
     title: 'Blur Removed / Access Upgraded',
     subject: 'Your YieldCanary Pro access just went live!',
     previewText: 'Full ETF metrics, including Take-Home Cash Return, are now visible.',
-    body: `{{first_name}},\nBoom — the blur is gone!\nYou now have full access to every metric on our list of income ETFs, including the Take-Home Cash Return column.\nOpen the dashboard → https://app.yieldcanary.com\nEnjoy the truth,\n-YieldCanary HQ`,
+    body: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Upgraded - YieldCanary</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9fafb;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: #ffffff;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .boom {
+      font-size: 52px;
+      margin-bottom: 15px;
+      animation: pulse 1s ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      color: #1f2937;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    .highlight-box {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 8px;
+      padding: 25px;
+      text-align: center;
+      margin: 25px 0;
+      border: 2px solid #fbbf24;
+    }
+    .highlight-box h2 {
+      color: #92400e;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .highlight-box p {
+      color: #78350f;
+      font-size: 14px;
+    }
+    .message {
+      font-size: 16px;
+      color: #4b5563;
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #8b5cf6;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 30px 0;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .signature {
+      font-size: 14px;
+      color: #1f2937;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .container { border-radius: 0; }
+      .content, .header { padding: 30px 20px; }
+      .header h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="boom">💥</div>
+      <h1>The Blur is Gone!</h1>
+      <p>Pro Access Activated</p>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">{{first_name}},</p>
+      
+      <div class="highlight-box">
+        <h2>Full Access Unlocked</h2>
+        <p>Every metric on our list of income ETFs is now visible</p>
+      </div>
+      
+      <p class="message">
+        You now have complete access to every metric we track, including the <strong>Take-Home Cash Return</strong> column that shows exactly what you'll actually keep after taxes and ROC adjustments.
+      </p>
+      
+      <p class="message">
+        No more blurred data. No more hidden numbers. Just the truth.
+      </p>
+      
+      <p style="text-align: center;">
+        <a href="https://yieldcanary.com" class="cta-button">Open the Dashboard</a>
+      </p>
+    </div>
+    
+    <div class="footer">
+      <p class="footer-text">Happy hunting!</p>
+      <p class="signature">
+        Enjoy the truth,<br>
+        <span style="color: #8b5cf6; font-weight: 600;">YieldCanary HQ</span>
+      </p>
+      <p class="footer-text" style="margin-top: 20px; font-size: 12px;">
+        © 2024 YieldCanary. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
   },
   {
     id: 'access_expired',
     title: 'Access Expired / Churn notice',
     subject: 'Your YieldCanary Pro access has expired',
     previewText: 'Blurred data is back, but your watchlist is saved if you return.',
-    body: `Hey {{first_name}},\nYour Pro access expired today — the blur is back on.\nWant it back? Reactivate anytime here (your watchlist is still saved):\nhttps://app.yieldcanary.com/pricing\nNo pressure — we’ll keep your data safe.\n-YieldCanary HQ`,
+    body: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Expired - YieldCanary</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9fafb;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      color: #ffffff;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .icon {
+      font-size: 42px;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      color: #1f2937;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 16px;
+      color: #4b5563;
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+    .info-box {
+      background-color: #f1f5f9;
+      border-left: 4px solid #64748b;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 4px;
+    }
+    .info-box p {
+      color: #475569;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .info-box p:last-child {
+      margin-bottom: 0;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 30px 0;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .signature {
+      font-size: 14px;
+      color: #1f2937;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .container { border-radius: 0; }
+      .content, .header { padding: 30px 20px; }
+      .header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="icon">⏰</div>
+      <h1>Your Pro Access Has Expired</h1>
+      <p>The blur is back</p>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">Hey {{first_name}},</p>
+      
+      <p class="message">
+        Your Pro access expired today — the blur is back on and premium metrics are now hidden.
+      </p>
+      
+      <div class="info-box">
+        <p><strong>✓ Your watchlist is still saved</strong></p>
+        <p><strong>✓ Your account is still active</strong></p>
+        <p><strong>✓ All your data is safe</strong></p>
+      </div>
+      
+      <p class="message">
+        Want your full access back? You can reactivate anytime — no pressure, we'll keep your data safe while you decide.
+      </p>
+      
+      <p style="text-align: center;">
+        <a href="https://yieldcanary.com/pricing" class="cta-button">Reactivate Pro Access</a>
+      </p>
+      
+      <p class="message" style="margin-top: 30px; font-size: 14px; color: #6b7280; text-align: center;">
+        Questions? Just reply to this email.
+      </p>
+    </div>
+    
+    <div class="footer">
+      <p class="footer-text">We're here if you need us.</p>
+      <p class="signature">
+        No pressure,<br>
+        <span style="color: #64748b; font-weight: 600;">YieldCanary HQ</span>
+      </p>
+      <p class="footer-text" style="margin-top: 20px; font-size: 12px;">
+        © 2024 YieldCanary. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
   },
   {
     id: 'password_reset',
     title: 'Password Reset',
     subject: 'Reset your YieldCanary password',
     previewText: 'Set a new password for your account.',
-    body: `Hey {{first_name}},\nSomeone (hopefully you) requested a password reset.\nClick here to set a new password:\n{{reset_link}}\nIf you didn’t ask for this, just ignore this email.\n\n-YieldCanary HQ`,
+    body: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Reset - YieldCanary</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f9fafb;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      padding: 40px 30px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .icon {
+      font-size: 42px;
+      margin-bottom: 15px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .greeting {
+      font-size: 18px;
+      color: #1f2937;
+      margin-bottom: 20px;
+    }
+    .message {
+      font-size: 16px;
+      color: #4b5563;
+      margin-bottom: 25px;
+      line-height: 1.8;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #ef4444;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 30px 0;
+    }
+    .warning-box {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 4px;
+    }
+    .warning-box p {
+      color: #991b1b;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .warning-box p:last-child {
+      margin-bottom: 0;
+    }
+    .link-box {
+      background-color: #f9fafb;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 12px;
+      color: #2563eb;
+    }
+    .footer {
+      background-color: #f9fafb;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #e5e7eb;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .signature {
+      font-size: 14px;
+      color: #1f2937;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .container { border-radius: 0; }
+      .content, .header { padding: 30px 20px; }
+      .header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="icon">🔐</div>
+      <h1>Password Reset Request</h1>
+      <p>Secure your account</p>
+    </div>
+    
+    <div class="content">
+      <p class="greeting">Hey {{first_name}},</p>
+      
+      <p class="message">
+        Someone (hopefully you) requested a password reset for your YieldCanary account.
+      </p>
+      
+      <p style="text-align: center;">
+        <a href="{{reset_link}}" class="cta-button">Reset Your Password</a>
+      </p>
+      
+      <p class="message" style="font-size: 14px; color: #6b7280;">
+        If the button doesn't work, copy and paste this link into your browser:
+      </p>
+      
+      <div class="link-box">
+        {{reset_link}}
+      </div>
+      
+      <div class="warning-box">
+        <p><strong>⚠️ This link expires in 1 hour</strong></p>
+        <p>If you didn't request this reset, you can safely ignore this email. Your password will remain unchanged.</p>
+      </div>
+      
+      <p class="message" style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+        Need help? Reply to this email and we'll assist you.
+      </p>
+    </div>
+    
+    <div class="footer">
+      <p class="footer-text">Keep your account secure.</p>
+      <p class="signature">
+        <span style="color: #ef4444; font-weight: 600;">YieldCanary HQ</span>
+      </p>
+      <p class="footer-text" style="margin-top: 20px; font-size: 12px;">
+        © 2024 YieldCanary. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`,
   },
 ];
