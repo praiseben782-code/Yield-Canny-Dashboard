@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { redirectToCheckout, type PricingPlan } from '@/integrations/stripe/checkout';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
+import { sendTransactionalEmail } from '@/lib/sendTransactionalEmail';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -54,8 +55,18 @@ const Landing = () => {
       const cleanedParams = new URLSearchParams(searchParams);
       cleanedParams.delete('payment');
       setSearchParams(cleanedParams);
+
+      // Send payment receipt email on success
+      if (payment === 'success' && userEmail) {
+        const firstName = userEmail.split('@')[0];
+        sendTransactionalEmail({
+          to: userEmail,
+          templateId: 'payment_receipt',
+          data: { first_name: firstName },
+        }).catch(err => console.error('Failed to send payment receipt email:', err));
+      }
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, userEmail]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Bird, ChevronLeft, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { sendTransactionalEmail } from "@/lib/sendTransactionalEmail";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,6 +66,12 @@ export default function Auth() {
       return;
     }
 
+    if (!isLogin && !username) {
+      setError("Please provide a username");
+      setLoading(false);
+      return;
+    }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       setLoading(false);
@@ -97,6 +105,45 @@ export default function Auth() {
           throw new Error(error.message);
         }
         console.log("Sign up successful:", data.user?.email);
+        
+        // Store username in Supabase users table
+        if (data.user?.email && username) {
+          try {
+            // Use upsert to handle duplicate email gracefully
+            const { error: insertError } = await supabase
+              .from('users')
+              .upsert(
+                {
+                  email: data.user.email,
+                  username: username,
+                },
+                { onConflict: 'email' }
+              );
+            
+            if (insertError) {
+              console.error("Error storing user profile:", insertError);
+            } else {
+              console.log("User profile stored with username:", username);
+            }
+          } catch (profileError) {
+            console.error("Failed to store user profile:", profileError);
+          }
+        }
+        
+        // Send welcome email with username
+        if (data.user?.email) {
+          try {
+            await sendTransactionalEmail({
+              to: data.user.email,
+              templateId: 'welcome_verify',
+              data: { first_name: username || email.split('@')[0] },
+            });
+            console.log("Welcome email sent to:", data.user.email);
+          } catch (emailError) {
+            console.error("Failed to send welcome email:", emailError);
+            // Don't throw - signup was successful, email sending is bonus
+          }
+        }
         
         // Check if email confirmation is required
         if (data.user && !data.session) {
@@ -192,6 +239,21 @@ export default function Auth() {
               className="text-sm h-9 xs:h-10"
             />
           </div>
+
+          {!isLogin && (
+            <div className="space-y-1.5 xs:space-y-2">
+              <Label htmlFor="username" className="text-xs xs:text-sm">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="your_username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required={!isLogin}
+                className="text-sm h-9 xs:h-10"
+              />
+            </div>
+          )}
 
           <div className="space-y-1.5 xs:space-y-2">
             <Label htmlFor="password" className="text-xs xs:text-sm">Password</Label>

@@ -1,4 +1,5 @@
 import { stripePromise } from './client';
+import { supabase } from '@/integrations/supabase/client';
 
 export type PricingPlan = 'basic_monthly' | 'basic_yearly' | 'advanced_monthly' | 'advanced_yearly' | 'one_dollar';
 
@@ -9,7 +10,7 @@ const PRICE_IDS: Record<PricingPlan, string> = {
   advanced_yearly: import.meta.env.VITE_ADVANCED_YEARLY_PRICE || '',
   one_dollar:
     import.meta.env.VITE_HALF_DOLLAR_PRICE ||
-    import.meta.env.VITE_ONE_DOLLAR_PRICE ||
+    
     '',
 };
 
@@ -27,12 +28,27 @@ export async function redirectToCheckout(plan: PricingPlan, email?: string) {
       throw new Error(`Price ID not found for plan: ${plan}. Please check your environment variables.`);
     }
 
-    // Call the API endpoint to create checkout session
-    const response = await fetch('/api/create-checkout-session', {
+    // Call the Supabase Edge Function to create checkout session
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    if (!supabaseUrl) {
+      throw new Error('VITE_SUPABASE_URL is not set');
+    }
+
+    // Get current session for authorization
+    const { data: { session } } = await supabase.auth.getSession();
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add authorization header if session exists
+    if (session?.access_token) {
+      headers['Authorization'] = `Bearer ${session.access_token}`;
+    }
+
+    const response = await fetch(`${supabaseUrl}/functions/v1/create-checkout-session`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         priceId,
         email,
@@ -93,7 +109,7 @@ export function getPlanPrice(plan: PricingPlan): string {
     case 'advanced_yearly':
       return '$189/year';
     case 'one_dollar':
-      return '$0.30';
+      return '$0.50';
     default:
       return '$0';
   }
